@@ -1,0 +1,131 @@
+/*----- css for login.jsx ---*/
+.login-cont-div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: start;
+    gap: 5px;
+}
+
+.login-left-span {
+    height: 0px;
+    width: 0px;
+}
+
+.login-right-span {
+    margin: 3%;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center; 
+    border: 3px solid gray;
+    border-radius: 30px;
+
+}
+
+.form-body {
+    margin-top: 5%;
+    height: auto;
+    min-width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    border-radius: 30px;
+    /* border: 3px solid gray; */
+
+}
+
+@media (min-width: 769px) {
+    .login-left-span {
+        height: 95vh;
+        width: 55%;
+        background-color: gray;
+        border: 1px solid gray;
+        box-sizing: border-box;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 20px;
+        border-radius: 30px;
+    }
+
+    .login-right-span {
+        margin-top: 5%;
+        min-height: 65vh;
+        width: 40%;
+        border: 3px solid gray;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+    }
+}
+
+.component-heading {
+    font-size: 350%;
+    font-weight: 600;
+    align-self: center;
+    /* margin-top: 20%; */
+}
+
+.form-body {
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 15px;
+    height: auto;
+    width: auto;
+}
+
+.cont-of-inp {
+    min-height: 50px;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: #767676;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+
+}
+
+.inp {
+    width: 98%;
+    height: 60px;
+    padding-left: 10px;
+    font-size: 120%;
+    box-sizing: border-box;
+    border: 1px solid grey;
+    border-radius: 5px;
+    border-bottom: 5px solid black;
+    margin-bottom: 2px;
+
+}
+
+.error-message {
+    color: brown;
+    font-weight: 700;
+    align-self: flex-start;
+    padding-left: 18px;
+    font-size: 95%;
+}
+
+.btn {
+    width: 60%;
+    height: 45px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    font-size: 130%;
+    color: #353535;
+}
+
+.btn:hover {
+    border-radius: 30px;
+}
