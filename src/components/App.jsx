@@ -44,7 +44,7 @@ function App() {
           } />
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <Login />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <Register />} />
-          <Route path='/refresh' element={<Refresh />} />
+          <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
