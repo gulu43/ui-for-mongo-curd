@@ -6,7 +6,7 @@ import { Navigate } from 'react-router-dom';
 export function ProtectedRoutes({ children  }) {
 
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
-    console.log(tokens.accessToken, tokens.refreshToken, theam);
+    // console.log(tokens.accessToken, tokens.refreshToken, theam);
 
     if (!tokens.accessToken) {
         return <Navigate to="/login" replace />

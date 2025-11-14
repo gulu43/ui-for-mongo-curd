@@ -20,15 +20,23 @@ export function Login() {
         console.log("data in login: ", data)
     }, [data])
 
-    useEffect(() => {
+    // useEffect(async () => {
+    //     if (!tokens.accessToken && tokens.refreshToken.length >= 3) {
+    //         const result = await axios.post('http://localhost:4000/refresh', {}, {
+    //             headers: { 'refreshToken': tokens.refreshToken }
+    //         })
+    //         if (result.data.status == 201) {
+    //             sessionStorage.setItem('accessToken', result.data.accessToken)
+    //             navigate('/home')
+    //         }
+    //     }
+    // }, []);
 
-        const accessToken = sessionStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (accessToken || refreshToken) {
-            setTokens({ accessToken, refreshToken });
-        }
-    }, []);
-
+    // const accessToken = sessionStorage.getItem('accessToken');
+    // const refreshToken = localStorage.getItem('refreshToken');
+    // if (accessToken || refreshToken) {
+    //     setTokens({ accessToken, refreshToken });
+    // }
 
     function checkValidetion() {
         let InvalidFields = {}

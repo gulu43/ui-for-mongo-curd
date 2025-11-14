@@ -5,6 +5,7 @@ import { LogOut } from '../../LogOut.jsx'
 import { InvalidRouts } from './InvalidRouts.jsx'
 import { Login } from './Login.jsx'
 import { Register } from './Register.jsx'
+import { Refresh } from './Refresh.jsx'
 import { Home } from './Home.jsx'
 import { createContext } from 'react'
 import '../App.css'
@@ -14,20 +15,20 @@ export const StateContext = createContext()
 function App() {
   const [theam, setTheam] = useState('Dark')
   const [tokens, setTokens] = useState({
-    accessToken: '',
-    refreshToken: ''
+    accessToken: sessionStorage.getItem('accessToken'),
+    refreshToken: localStorage.getItem('refreshToken')
   })
 
-  useEffect(() => {
-    const accessToken = sessionStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
-    setTokens({
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    })
-    console.log(`accessToken: ${tokens.accessToken},\n refreshToken: ${tokens.refreshToken}`);
+  // useEffect(() => {
+  //   const accessToken = sessionStorage.getItem('accessToken')
+  //   const refreshToken = localStorage.getItem('refreshToken')
+  //   setTokens({
+  //     accessToken: accessToken,
+  //     refreshToken: refreshToken
+  //   })
+  //   console.log(`accessToken: ${tokens.accessToken},\n refreshToken: ${tokens.refreshToken}`);
 
-  }, [])
+  // }, [])
 
 
   return (
@@ -35,10 +36,15 @@ function App() {
       <StateContext.Provider value={{ tokens, setTokens, theam, setTheam }} >
         <Routes>
           <Route path="/" element={
-            tokens.accessToken ? <Navigate to="/home" /> : <Navigate to="/login" />
+            tokens.accessToken
+              ? <Navigate to="/home" />
+              : tokens.refreshToken
+                ? <Navigate to="/refresh" />
+                : <Navigate to="/login" />
           } />
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <Login />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <Register />} />
+          <Route path='/refresh' element={<Refresh />} />
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
