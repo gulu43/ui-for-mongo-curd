@@ -1,24 +1,24 @@
 import axios from "axios"
-import { config } from "dotenv"
 
 const api = axios.create({
     baseURL: 'http://localhost:4000'
 })
 
 api.interceptors.request.use((config) => {
-    const accesToken = sessionStorage.getItem('accessToken')
-    if (accesToken) {
-        config.headers.accestoken = accesToken
-
+    const accessToken = sessionStorage.getItem('accessToken')
+    if (accessToken) {
+        config.headers.accesstoken = accessToken
     }
+    
     return config
 })
 
+const refreshToken = localStorage.getItem('refreshToken')
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
 
-        const originalResponse = error.config
+        const originalRequest = error.config
 
         if (error.response.status == 401 && !originalRequest._retry) {
             originalRequest._retry = true
@@ -27,8 +27,8 @@ api.interceptors.response.use(
                 headers: { 'refreshToken': refreshToken }
             })
 
-            sessionStorage.setItem('accesToken', result.data.refreshtoken)
-            originalResponse.headers.accestoken = result.data.refreshtoken
+            sessionStorage.setItem('accessToken', result.data.accessToken)
+            originalRequest.headers.accestoken = result.data.accessToken
 
             // api({
             //     method: originalRequest.method,
@@ -37,7 +37,7 @@ api.interceptors.response.use(
             //     headers: originalRequest.headers,
             // })
 
-            return api(originalResponse)
+            return api(originalRequest)
 
         }
 

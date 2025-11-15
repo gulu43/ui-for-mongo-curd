@@ -84,7 +84,7 @@ export function Login() {
                 console.log('Error: ', error.response.data?.message || 'Fields Should not be empty')
                 console.log('Status:', error.response.status)
             } else {
-                console.log('Network error:', error?.message || 'something went rong')
+                console.log(`Network error: ${error}` || 'something went rong')
             }
         }
     }
