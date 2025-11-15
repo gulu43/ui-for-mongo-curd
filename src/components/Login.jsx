@@ -106,7 +106,7 @@ export function Login() {
                             <span className='error-message'>{errorMessage.usersname}</span>
                         </div>
                         <div className='cont-of-inp'>
-                            <input type="text" id="password" className='inp' placeholder='Password' onChange={(e) => {
+                            <input type="password" id="password" className='inp' placeholder='Password' onChange={(e) => {
                                 setData((prev) => ({
                                     ...prev,
                                     password: e.target.value
