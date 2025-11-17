@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { ProtectedRoutes } from './ProtectedRoutes.jsx'
-import { LogOut } from '../../LogOut.jsx'
+import { LogOut } from './LogOut.jsx'
 import { InvalidRouts } from './InvalidRouts.jsx'
 import { Login } from './Login.jsx'
 import { Register } from './Register.jsx'
