@@ -20,6 +20,10 @@ export function Login() {
         console.log("data in login: ", data)
     }, [data])
 
+    const changeTheamFn = ()=>{
+        theam == 'dark' ? setTheam('light') : setTheam('dark');
+        
+    }
     // useEffect(async () => {
     //     if (!tokens.accessToken && tokens.refreshToken.length >= 3) {
     //         const result = await axios.post('http://localhost:4000/refresh', {}, {
@@ -94,7 +98,11 @@ export function Login() {
             <div className='login-cont-div'>
                 <span className='login-left-span'></span>
                 <span className='login-right-span'>
-                    <span className='component-heading'>Login</span>
+                    <div className='heading-cont'>
+                        <div className='component-heading'>Login</div >
+                        <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn}  />
+                    </div>
+
                     <div className='form-body'>
                         <div className='cont-of-inp'>
                             <input type="text" id="usersname" className='inp' placeholder='Usersname' onChange={(e) => {

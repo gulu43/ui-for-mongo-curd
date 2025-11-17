@@ -13,22 +13,15 @@ import '../App.css'
 export const StateContext = createContext()
 
 function App() {
-  const [theam, setTheam] = useState('Dark')
+  const [theam, setTheam] = useState('dark')
   const [tokens, setTokens] = useState({
     accessToken: sessionStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken')
   })
 
-  // useEffect(() => {
-  //   const accessToken = sessionStorage.getItem('accessToken')
-  //   const refreshToken = localStorage.getItem('refreshToken')
-  //   setTokens({
-  //     accessToken: accessToken,
-  //     refreshToken: refreshToken
-  //   })
-  //   console.log(`accessToken: ${tokens.accessToken},\n refreshToken: ${tokens.refreshToken}`);
-
-  // }, [])
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theam', theam)
+  }, [theam])
 
 
   return (

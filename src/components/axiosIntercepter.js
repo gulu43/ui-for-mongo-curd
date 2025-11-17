@@ -6,29 +6,31 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
     const accessToken = sessionStorage.getItem('accessToken')
+    // refreshtoken
     if (accessToken) {
         config.headers.accesstoken = accessToken
     }
-    
+
     return config
 })
 
-const refreshToken = localStorage.getItem('refreshToken')
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
 
+        const refreshToken = localStorage.getItem('refreshToken')
         const originalRequest = error.config
 
         if (error.response.status == 401 && !originalRequest._retry) {
             originalRequest._retry = true
 
             const result = await axios.post('http://localhost:4000/refresh', {}, {
-                headers: { 'refreshToken': refreshToken }
+                headers: { 'refreshtoken': refreshToken }
             })
+            console.log('result from axiosINtercepter: ', result);
 
             sessionStorage.setItem('accessToken', result.data.accessToken)
-            originalRequest.headers.accestoken = result.data.accessToken
+            originalRequest.headers.accesstoken = result.data.accessToken
 
             // api({
             //     method: originalRequest.method,
