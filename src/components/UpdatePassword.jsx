@@ -55,9 +55,18 @@ export function UpdatePassword() {
                 headers: { 'Content-Type': 'application/json' }
             })
 
-            console.log(result.data.message, result.status)
-
-            navigate('/home')
+            if (result.request.status == 400) {
+                console.log(result.data.message, result.status)
+            }
+            if (result.request.status == 401) {
+                console.log(result.data.message, result.status)
+            }
+            if (result.request.status == 201) {
+                console.log('Password updated')
+                sessionStorage.clear()
+                localStorage.clear()
+                navigate('/login')
+            }
             // }
         } catch (error) {
 
