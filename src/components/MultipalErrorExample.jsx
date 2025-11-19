@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import axiosInstance from './axiosIntercepter.js'
 import '../App.css'
 
-export function Home() {
+export function MultipalErrorExample() {
 
     // const [usersname, setUsername] = useState('')
     // const [errorMessage, setErrorMessage] = useState('');
 
-    const checkUserFn = async (e) => {
+    const checkUsersFn = async (e) => {
         e.preventDefault()
         try {
 
-            // const result = Promise.all([
-            //     axiosInstance.get('/getuser?usersname=Gulu43'),
-            //     axiosInstance.get('/getuser?usersname=Abhi07'),
-            //     axiosInstance.get('/getuser?usersname=Aryan15'),
-            // ])
-            const result = await axiosInstance.get('/getuser?usersname=Gulu43')
-            const result1 = await axiosInstance.get('/getuser?usersname=Abhi07')
-            const result2 = await axiosInstance.get('/getuser?usersname=Aryan15')
+            const result = Promise.all([
+                axiosInstance.get('/getuser?usersname=Gulu43'),
+                axiosInstance.get('/getuser?usersname=Abhi07'),
+                axiosInstance.get('/getuser?usersname=Aryan15'),
+            ])
+            // const result = await axiosInstance.get('/getuser?usersname=Gulu43')
+            // const result1 = await axiosInstance.get('/getuser?usersname=Abhi07')
+            // const result2 = await axiosInstance.get('/getuser?usersname=Aryan15')
 
             // console.log("home.jsx response after first request: ", result[0]?.data, result[0]?.status)
             // console.log("home.jsx response after second request: ", result[1]?.data, result[1]?.status)
@@ -38,10 +38,10 @@ export function Home() {
 
     return (
         <>
-            <h1>Home</h1>
+            <h1>HomeExamle</h1>
 
             <input type="button" className="btn-demo" onClick={(e) => {
-                checkUserFn(e)
+                checkUsersFn(e)
             }} value="Submit" />
         </>
     );
