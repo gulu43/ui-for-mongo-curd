@@ -192,6 +192,31 @@ body {
     border-radius: 30px;
 }
 
+.register-outer-cont {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5%;
+    box-sizing: border-box;
+}
+
+.register-inner {
+    box-sizing: border-box;
+    align-self: center;
+    padding: 1%;
+    height: auto;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: var(--right-bg-border-color);
+    border-radius: 30px;
+}
+
+
 /* for demo */
 .cont-of-inp-demo {
     min-height: 50px;

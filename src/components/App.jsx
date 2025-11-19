@@ -9,6 +9,7 @@ import { Refresh } from './Refresh.jsx'
 import { Home } from './Home.jsx'
 import { createContext } from 'react'
 import '../App.css'
+import { UpdatePassword } from './UpdatePassword.jsx'
 
 export const StateContext = createContext()
 
@@ -39,6 +40,7 @@ function App() {
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <Register />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
+          <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
 
