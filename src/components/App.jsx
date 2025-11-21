@@ -10,15 +10,50 @@ import { Home } from './Home.jsx'
 import { createContext } from 'react'
 import '../App.css'
 import { UpdatePassword } from './UpdatePassword.jsx'
+import { DelAc } from './DelAc.jsx'
+import { setAccessTokenOutside, setNavigator } from "./redirect.js";
+import axiosInstance from './axiosIntercepter.js'
 
 export const StateContext = createContext()
 
 function App() {
+  
+  useEffect(() => {
+    const check = localStorage.getItem('refreshToken')
+    if (check) {
+      axiosInstance.get('/me')
+    }
+  }, [])
+
+  const navigate = useNavigate();
+
   const [theam, setTheam] = useState('dark')
+
   const [tokens, setTokens] = useState({
     accessToken: sessionStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken')
   })
+
+  useEffect(() => {
+    setAccessTokenOutside((accessToken) => {
+      console.log('inside setter: ',accessToken);
+      
+      setTokens((prev) => ({
+        ...prev,
+        'accessToken': accessToken
+      }))
+    })
+  }, [])
+
+  useEffect(() => {
+    console.log('accessToken changed', tokens.accessToken)
+    console.log('refreshToken changed', tokens.refreshToken)
+  }, [tokens])
+  
+
+  useEffect(() => {
+    setNavigator(navigate);
+  }, [navigate])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theam', theam)
@@ -33,7 +68,7 @@ function App() {
             tokens.accessToken
               ? <Navigate to="/home" />
               : tokens.refreshToken
-                ? <Navigate to="/refresh" />
+                ? <Navigate to="/home" />
                 : <Navigate to="/login" />
           } />
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <Login />} />
@@ -42,6 +77,7 @@ function App() {
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
           <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
+          <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
 
         </Routes>

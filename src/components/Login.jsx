@@ -20,9 +20,9 @@ export function Login() {
         console.log("data in login: ", data)
     }, [data])
 
-    const changeTheamFn = ()=>{
+    const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');
-        
+
     }
     // useEffect(async () => {
     //     if (!tokens.accessToken && tokens.refreshToken.length >= 3) {
@@ -64,8 +64,9 @@ export function Login() {
             const result = await axios.post('http://localhost:4000/login', data, {
                 headers: { 'Content-Type': 'application/json' }
             })
+            console.log(result);
 
-            console.log(result.data.message, result.status)
+            // console.log(result.data.message, result.status)
             if (result.status == 200) {
                 console.log(result.data.message)
                 sessionStorage.setItem('accessToken', result.data.accessToken)
@@ -78,17 +79,43 @@ export function Login() {
                 }))
 
                 navigate('/home')
+
+            } else {
+                console.log("Unexpected response:", result.status)
             }
         } catch (error) {
 
-            if (error.status == 422) {
-                console.log(error.response.data.message)
+            if (error.response) {
+
+                // USER NOT ACTIVE
+                if (error.response.status === 422) {
+                    console.log('you are not active: ', error.response.data.message)
+                }
+
+                // WRONG PASSWORD
+                else if (error.response.status === 401) {
+                    console.log(' Password or username is wrong')
+                }
+
+                // USER NOT FOUND
+                else if (error.response.status === 404) {
+                    console.log('user not found: ', error.response.data.message)
+                }
+
+                // EMPTY FIELDS ERROR
+                else if (error.response.status === 400) {
+                    console.log('empty feils: ', error.response.data.message)
+                }
+
+                // ANY OTHER SERVER ERROR
+                else {
+                    console.log('Server error: ', error.response.data.message)
+                }
             }
-            else if (error.status == 401) {
-                console.log('Error: ', error.response.data?.message || 'Fields Should not be empty')
-                console.log('Status:', error.response.status)
-            } else {
-                console.log(`Network error: ${error}` || 'something went rong')
+
+            //  NETWORK OR AXIOS ERROR (server off, CORS, connection lost)
+            else {
+                console.log('Network Error in Login.jsx: ', error.message)
             }
         }
     }
@@ -100,7 +127,7 @@ export function Login() {
                 <span className='login-right-span'>
                     <div className='heading-cont'>
                         <div className='component-heading'>Login</div >
-                        <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn}  />
+                        <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn} />
                     </div>
 
                     <div className='form-body'>

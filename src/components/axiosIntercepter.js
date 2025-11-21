@@ -1,4 +1,5 @@
 import axios from "axios"
+import { goToLogin, updateAccessTokenInIntercepter } from "./redirect.js"
 
 const api = axios.create({
     baseURL: 'http://localhost:4000'
@@ -44,8 +45,9 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        console.log("response error----------------------------------------------: ", error);
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             // Already refreshing → queue this request
@@ -71,12 +73,34 @@ api.interceptors.response.use(
                     {},
                     { headers: { refreshtoken: refreshToken } }
                 );
+                console.log('axiosIntercepter:--------- ', result);
 
                 const newAccess = result.data.accessToken;
 
-                sessionStorage.setItem("accessToken", newAccess);
 
                 api.defaults.headers["accesstoken"] = newAccess;
+
+                console.log('newAccess?: ', newAccess);
+
+                updateAccessTokenInIntercepter(newAccess)
+                sessionStorage.setItem("accessToken", newAccess);
+
+                console.log("Before:", sessionStorage.getItem("accessToken"));
+
+                setTimeout(() => {
+                    console.log("After 100ms:", sessionStorage.getItem("accessToken"));
+                }, 100);
+
+                setTimeout(() => {
+                    console.log("After 500ms:", sessionStorage.getItem("accessToken"));
+                }, 500);
+                
+
+                console.log('accesstoken in intercepters: ', sessionStorage.getItem('accessToken'))
+                setTimeout(() => {
+                    sessionStorage.setItem("accessToken", newAccess);
+                    console.log("Delayed log:", sessionStorage.getItem("accessToken"));
+                }, 2000);
 
                 // Retry all queued requests
                 processQueue(null, newAccess);
@@ -90,6 +114,12 @@ api.interceptors.response.use(
             } catch (err) {
                 processQueue(err, null);
                 isRefreshing = false;
+
+                sessionStorage.clear()
+                localStorage.clear()
+                goToLogin()
+                console.log("response error: ", err);
+
                 return Promise.reject(err);
             }
         }

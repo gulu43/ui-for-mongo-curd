@@ -1,16 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../App.css'
 
 export function LogOut() {
     const navigate = useNavigate()
+
     const logout = () => {
         sessionStorage.clear()
         localStorage.clear()
-        navigate('/login')
+        setTimeout(() => {
+            console.log('After storage than /login else it will comepack to /home');
+
+            navigate('/login')
+            
+        }, [1500])
     }
     return (
-        <button onClick={logout}>
-            logout
-        </button>
+        <input type="button" className="btn" onClick={(e) => {
+            logout(e)
+        }} value="Logout" />
     );
 }
