@@ -19,18 +19,16 @@ export const StateContext = createContext()
 function App() {
 
   useEffect(() => {
+    console.log('only run first time');
+
     const check = localStorage.getItem('refreshToken')
-    // if (check) {
-    //   axiosInstance.get('/me')
-    // }
-    if (check) {
+     if (check) {
       axiosInstance.get('/me')
         .then(response => {
           console.log(' /me success:', response.data)
         })
         .catch(error => {
           console.log(' /me error:', error)
-          // The interceptor should handle this automatically
         })
     }
   }, [])
@@ -46,7 +44,7 @@ function App() {
 
   useEffect(() => {
     setAccessTokenOutside((accessToken) => {
-      console.log('inside setter: ', accessToken);
+      console.log('AccessToken value change with setter: ', accessToken);
 
       setTokens((prev) => ({
         ...prev,
@@ -60,10 +58,14 @@ function App() {
     console.log('refreshToken changed', tokens.refreshToken)
 
     if (tokens?.accessToken) {
+      console.log('--session value with tokens value');
       sessionStorage.setItem("accessToken", tokens.accessToken);
+
     }
     if (tokens?.refreshToken) {
+      console.log('--Local value with tokens value');
       localStorage.setItem("refreshToken", tokens.refreshToken);
+
     }
   }, [tokens])
 
