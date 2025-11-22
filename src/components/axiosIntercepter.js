@@ -31,6 +31,8 @@ function processQueue(error, token = null) {
 // ------------------
 api.interceptors.request.use((config) => {
     const accessToken = sessionStorage.getItem('accessToken')
+    console.log('what i am sending',accessToken);
+    
     if (accessToken) {
         config.headers.accesstoken = accessToken
     }
@@ -47,7 +49,7 @@ api.interceptors.response.use(
         const originalRequest = error.config;
         console.log("response error----------------------------------------------: ", error);
 
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             // Already refreshing → queue this request
@@ -75,7 +77,7 @@ api.interceptors.response.use(
                 );
                 console.log('axiosIntercepter:--------- ', result);
 
-                const newAccess = result.data.accessToken;
+                const newAccess = result?.data?.accessToken;
 
 
                 api.defaults.headers["accesstoken"] = newAccess;
@@ -85,22 +87,22 @@ api.interceptors.response.use(
                 updateAccessTokenInIntercepter(newAccess)
                 sessionStorage.setItem("accessToken", newAccess);
 
-                console.log("Before:", sessionStorage.getItem("accessToken"));
+                // console.log("Before:", sessionStorage.getItem("accessToken"));
 
-                setTimeout(() => {
-                    console.log("After 100ms:", sessionStorage.getItem("accessToken"));
-                }, 100);
-
-                setTimeout(() => {
-                    console.log("After 500ms:", sessionStorage.getItem("accessToken"));
-                }, 500);
+                // setTimeout(() => {
+                //     console.log("After 100ms:", sessionStorage.getItem("accessToken"));
+                // }, 100);
                 
+                // setTimeout(() => {
+                //     console.log("After 500ms:", sessionStorage.getItem("accessToken"));
+                // }, 500);
+
 
                 console.log('accesstoken in intercepters: ', sessionStorage.getItem('accessToken'))
-                setTimeout(() => {
-                    sessionStorage.setItem("accessToken", newAccess);
-                    console.log("Delayed log:", sessionStorage.getItem("accessToken"));
-                }, 2000);
+                // setTimeout(() => {
+                //     sessionStorage.setItem("accessToken", newAccess);
+                //     console.log("Delayed log:", sessionStorage.getItem("accessToken"));
+                // }, 1000);
 
                 // Retry all queued requests
                 processQueue(null, newAccess);
@@ -115,11 +117,12 @@ api.interceptors.response.use(
                 processQueue(err, null);
                 isRefreshing = false;
 
-                sessionStorage.clear()
-                localStorage.clear()
-                goToLogin()
+                // sessionStorage.clear()
+                // localStorage.clear()
+                // goToLogin()
                 console.log("response error: ", err);
 
+                
                 return Promise.reject(err);
             }
         }

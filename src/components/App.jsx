@@ -17,11 +17,21 @@ import axiosInstance from './axiosIntercepter.js'
 export const StateContext = createContext()
 
 function App() {
-  
+
   useEffect(() => {
     const check = localStorage.getItem('refreshToken')
+    // if (check) {
+    //   axiosInstance.get('/me')
+    // }
     if (check) {
       axiosInstance.get('/me')
+        .then(response => {
+          console.log(' /me success:', response.data)
+        })
+        .catch(error => {
+          console.log(' /me error:', error)
+          // The interceptor should handle this automatically
+        })
     }
   }, [])
 
@@ -36,8 +46,8 @@ function App() {
 
   useEffect(() => {
     setAccessTokenOutside((accessToken) => {
-      console.log('inside setter: ',accessToken);
-      
+      console.log('inside setter: ', accessToken);
+
       setTokens((prev) => ({
         ...prev,
         'accessToken': accessToken
@@ -48,8 +58,15 @@ function App() {
   useEffect(() => {
     console.log('accessToken changed', tokens.accessToken)
     console.log('refreshToken changed', tokens.refreshToken)
+
+    if (tokens?.accessToken) {
+      sessionStorage.setItem("accessToken", tokens.accessToken);
+    }
+    if (tokens?.refreshToken) {
+      localStorage.setItem("refreshToken", tokens.refreshToken);
+    }
   }, [tokens])
-  
+
 
   useEffect(() => {
     setNavigator(navigate);
