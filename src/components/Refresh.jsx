@@ -22,6 +22,7 @@ export function Refresh() {
 
                     if (result.status == 201) {
                         sessionStorage.setItem('accessToken', result.data.accessToken)
+                        // also update tokens
                         setTokens((prev) => ({
                             ...prev,
                             'accessToken': result.data.accessToken
@@ -35,11 +36,9 @@ export function Refresh() {
             refreshFn()
         }, []);
     useEffect(() => {
-        console.log('useEffect Refresh: ', tokens.accessToken, tokens.accessToken);
+        console.log('useEffect Refresh in refresh before: ', tokens.accessToken, tokens.accessToken);
         const accessToken = sessionStorage.getItem('accessToken')
         console.log('useEffect Refresh: ', accessToken);
-
-
     }, [tokens])
     return (
         <>

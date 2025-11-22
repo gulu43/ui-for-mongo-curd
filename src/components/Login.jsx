@@ -115,7 +115,7 @@ export function Login() {
 
             //  NETWORK OR AXIOS ERROR (server off, CORS, connection lost)
             else {
-                console.log('Network Error in Login.jsx: ', error.message)
+                console.log('Network Error in Login.jsx: ', error)
             }
         }
     }

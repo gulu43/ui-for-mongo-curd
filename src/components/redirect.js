@@ -15,8 +15,7 @@ export const setAccessTokenOutside = (set)=>{
 }
 
 export function updateAccessTokenInIntercepter(accessToken) {
-    console.log('in redirect1: ',accessToken);
   if (setAccessTokenFn) setAccessTokenFn(accessToken);
-  console.log('in redirect: ',accessToken);
+  console.log('update Access Trigger: ',accessToken);
   
 }
