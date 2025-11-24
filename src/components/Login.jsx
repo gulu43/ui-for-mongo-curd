@@ -16,9 +16,9 @@ export function Login() {
         usersname: '',
         password: ''
     })
-    useEffect(() => {
-        console.log("data in login: ", data)
-    }, [data])
+    // useEffect(() => {
+    //     console.log("data in login: ", data)
+    // }, [data])
 
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');

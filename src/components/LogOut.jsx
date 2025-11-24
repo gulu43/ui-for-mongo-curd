@@ -6,8 +6,8 @@ export function LogOut() {
     const navigate = useNavigate()
 
     const logout = () => {
-        sessionStorage.clear()
-        localStorage.clear()
+        // sessionStorage.clear()
+        // localStorage.clear()
         setTimeout(() => {
             console.log('After storage than /login else it will comepack to /home');
 

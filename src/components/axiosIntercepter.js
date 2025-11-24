@@ -35,7 +35,7 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        console.log("response error----------------------------------------------: ", error);
+        // console.log("response error----------------------------------------------: ", error);
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
@@ -63,9 +63,9 @@ api.interceptors.response.use(
                     {},
                     { headers: { refreshtoken: refreshToken } }
                 );
-                console.log('axiosIntercepter:--------- ', result);
+                // console.log('axiosIntercepter:--------- ', result);
                 const newAccess = result?.data?.accessToken;
-                console.log('newAccess?: ', newAccess);
+                // console.log('newAccess?: ', newAccess);
 
                 api.defaults.headers["accesstoken"] = newAccess;
 
@@ -73,22 +73,22 @@ api.interceptors.response.use(
 
                 sessionStorage.setItem("accessToken", newAccess);
 
-                console.log("Before:", sessionStorage.getItem("accessToken"));
+                // console.log("Before:", sessionStorage.getItem("accessToken"));
 
-                setTimeout(() => {
-                    console.log("After 100ms:", sessionStorage.getItem("accessToken"));
-                }, 100);
+                // setTimeout(() => {
+                //     console.log("After 100ms:", sessionStorage.getItem("accessToken"));
+                // }, 100);
 
-                setTimeout(() => {
-                    console.log("After 500ms:", sessionStorage.getItem("accessToken"));
-                }, 500);
+                // setTimeout(() => {
+                //     console.log("After 500ms:", sessionStorage.getItem("accessToken"));
+                // }, 500);
 
-                console.log('accesstoken in intercepters: ', sessionStorage.getItem('accessToken'))
+                // console.log('accesstoken in intercepters: ', sessionStorage.getItem('accessToken'))
 
-                setTimeout(() => {
-                    // sessionStorage.setItem("accessToken", newAccess);
-                    console.log("After 1sec: ", sessionStorage.getItem("accessToken"));
-                }, 1000);
+                // setTimeout(() => {
+                //     // sessionStorage.setItem("accessToken", newAccess);
+                //     console.log("After 1sec: ", sessionStorage.getItem("accessToken"));
+                // }, 1000);
 
                 // Retry all queued requests
                 processQueue(null, newAccess);
@@ -98,17 +98,24 @@ api.interceptors.response.use(
 
                 // Retry the original request
                 originalRequest.headers["accesstoken"] = newAccess;
-                console.log('original request: ',originalRequest);
+                // console.log('original request: ', originalRequest);
                 return api(originalRequest);
 
             } catch (err) {
                 processQueue(err, null);
                 isRefreshing = false;
 
-                // sessionStorage.clear()
-                // localStorage.clear()
-                // goToLogin()
+                
+
                 console.log("response error: ", err);
+                if (err.response.status == 404) {
+                    sessionStorage.clear()
+                    localStorage.clear()
+                    // Guaranteed redirect
+                    window.location.href = "/login";
+                    return;
+                }
+
 
 
                 return Promise.reject(err);
@@ -117,7 +124,12 @@ api.interceptors.response.use(
         }
 
         // Not 401
+        // console.log('+-------it in refresh error');
+        // sessionStorage.clear()
+        // localStorage.clear()
+        // goToLogin();
         return Promise.reject(error);
+
     }
 );
 

@@ -1,6 +1,8 @@
 let navigateFn = null;
 
 export const setNavigator = (navigate) => {
+    // console.log('ok',navigate);
+    
     navigateFn = navigate;
 };
 
@@ -16,6 +18,6 @@ export const setAccessTokenOutside = (set)=>{
 
 export function updateAccessTokenInIntercepter(accessToken) {
   if (setAccessTokenFn) setAccessTokenFn(accessToken);
-  console.log('update Access Trigger: ',accessToken);
+//   console.log('update Access Trigger: ',accessToken);
   
 }

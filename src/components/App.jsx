@@ -19,10 +19,10 @@ export const StateContext = createContext()
 function App() {
 
   useEffect(() => {
-    console.log('only run first time');
+    // console.log('only run first time');
 
     const check = localStorage.getItem('refreshToken')
-     if (check) {
+    if (check) {
       axiosInstance.get('/me')
         .then(response => {
           console.log(' /me success:', response.data)
@@ -38,9 +38,15 @@ function App() {
   const [theam, setTheam] = useState('dark')
 
   const [tokens, setTokens] = useState({
-    accessToken: sessionStorage.getItem('accessToken'),
-    refreshToken: localStorage.getItem('refreshToken')
+    accessToken: sessionStorage.getItem('accessToken') || '',
+    refreshToken: localStorage.getItem('refreshToken') || ''
   })
+  //   useEffect(() => {
+  //   if (!tokens.accessToken && tokens.refreshToken) {
+  //     axiosInstance.get("/refresh")
+  //       .catch(() => navigate("/login"));
+  //   }
+  // }, [tokens.accessToken, tokens.refreshToken, navigate]);
 
   useEffect(() => {
     setAccessTokenOutside((accessToken) => {
@@ -54,8 +60,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log('accessToken changed', tokens.accessToken)
-    console.log('refreshToken changed', tokens.refreshToken)
+    // console.log('accessToken changed', tokens.accessToken)
+    // console.log('refreshToken changed', tokens.refreshToken)
 
     if (tokens?.accessToken) {
       console.log('--session value with tokens value');
@@ -72,7 +78,7 @@ function App() {
 
   useEffect(() => {
     setNavigator(navigate);
-  }, [navigate])
+  }, [])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theam', theam)

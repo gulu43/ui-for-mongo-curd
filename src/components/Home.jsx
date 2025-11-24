@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import axiosInstance from './axiosIntercepter.js'
 import { useNavigate } from 'react-router-dom';
+import { goToLogin } from './redirect.js';
 import '../App.css'
 
 export function Home() {
 
     const navigate = useNavigate()
     const checkUserFn = async (e) => {
-        e.preventDefault()
+        // e.preventDefault()
         sessionStorage.clear()
         localStorage.clear()
         console.log('/login')
-        navigate('/login')
+        // goToLogin()
+        window.location.href = "/login";
+        return;
     }
     const checkUsersFn = async (e) => {
         e.preventDefault()
