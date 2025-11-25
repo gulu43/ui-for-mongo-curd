@@ -8,51 +8,52 @@ import axiosInstance from './axiosIntercepter.js';
 export function DelAc() {
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
-    const [errorMessage, setErrorMessage] = useState({
-        usersname: '',
-        password: ''
-    })
-    const [data, setData] = useState({
-        usersname: '',
-        password: ''
-    })
-    useEffect(() => {
-        console.log("data in login: ", data)
-    }, [data])
+    // const [errorMessage, setErrorMessage] = useState({
+    //     usersname: '',
+    //     password: ''
+    // })
+    // const [data, setData] = useState({
+    //     usersname: '',
+    //     password: ''
+    // })
+    // useEffect(() => {
+    //     console.log("data in login: ", data)
+    // }, [data])
 
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');
 
     }
-    function checkValidetion() {
-        let InvalidFields = {}
-        if (data.usersname == '') {
-            InvalidFields.usersname = 'Username Sould not be empty'
-        }
-        if (data.password == '') {
-            InvalidFields.password = 'password Sould not be empty'
-        }
-        setErrorMessage(InvalidFields)
-        return Object.keys(InvalidFields).length === 0
-    }
+    // function checkValidetion() {
+    //     let InvalidFields = {}
+    //     if (data.usersname == '') {
+    //         InvalidFields.usersname = 'Username Sould not be empty'
+    //     }
+    //     // if (data.password == '') {
+    //     //     InvalidFields.password = 'password Sould not be empty'
+    //     // }
+    //     setErrorMessage(InvalidFields)
+    //     return Object.keys(InvalidFields).length === 0
+    // }
     const deleteAccountFn = async (e) => {
-        e.preventDefault()
+        // e.preventDefault()
         try {
-            const check = checkValidetion()
-            if (!check) return console.log('Feild/s are empty')
+            // const check = checkValidetion()
+            // if (!check) return console.log('Feild/s are empty')
 
-            const result = await axiosInstance.delete('/deleteaccount', data, {
+            const result = await axiosInstance.delete('/deleteaccount', {
                 headers: { 'Content-Type': 'application/json' }
             })
 
-            if (result.response.status == 404) {
+            if (result.status == 404) {
                 console.log(result.response.message, result.response.status)
             }
-            if (result.response.status == 200) {
+            if (result.status == 200) {
                 console.log('User Deleted')
                 sessionStorage.clear()
                 localStorage.clear()
-                navigate('/login')
+                window.location.href = "/login";
+                return;
             }
             // }
         } catch (error) {
@@ -62,7 +63,7 @@ export function DelAc() {
             }
             else if (error.response?.status == 401) {
                 console.log('Error: ', error.response.data?.message || 'Fields Should not be empty')
-                console.log('Status:', error.response.status)
+                console.log('Status:', error.response.data?.status)
             } else {
                 console.log(`Network error in updatePassword.jsx: ${error}` || 'something went rong')
             }
@@ -81,18 +82,21 @@ export function DelAc() {
                     <div className='form-body'>
 
                         <div className='cont-of-inp'>
-                            <input type="text" id="usersname" className='inp' placeholder='Usersname' onChange={(e) => {
+                            {/* <input type="text" id="usersname" className='inp' placeholder='Usersname' onChange={(e) => {
                                 setData((prev) => ({
                                     ...prev,
                                     usersname: e.target.value
                                 }))
-                            }} />
-                            <span className='error-message'>{errorMessage.usersname}</span>
+                            }} /> */}
+                            {/* <span className='error-message'>{errorMessage.usersname}</span> */}
+                            <center>
+                                <span className='error-message'>This Action can not be Undo</span>
+                            </center>
                         </div>
 
                         <input type="button" className="btn" onClick={(e) => {
                             deleteAccountFn(e)
-                        }} value="Submit" />
+                        }} value="Delete Account" />
                     </div>
                 </div>
             </div>
