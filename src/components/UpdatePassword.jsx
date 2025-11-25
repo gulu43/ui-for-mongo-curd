@@ -22,9 +22,9 @@ export function UpdatePassword() {
         newPassword: ''
     })
 
-    useEffect(() => {
-        console.log("data in login: ", data)
-    }, [data])
+    // useEffect(() => {
+    //     console.log("data in login: ", data)
+    // }, [data])
 
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');
@@ -65,9 +65,10 @@ export function UpdatePassword() {
                 console.log('Password updated')
                 sessionStorage.clear()
                 localStorage.clear()
-                navigate('/login')
+                window.location.href = "/login";
+                return;
             }
-            // }
+
         } catch (error) {
 
             if (error.response?.status == 400) {
