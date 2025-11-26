@@ -13,6 +13,7 @@ import { UpdatePassword } from './UpdatePassword.jsx'
 import { DelAc } from './DelAc.jsx'
 import { setAccessTokenOutside, setNavigator } from "./redirect.js";
 import axiosInstance from './axiosIntercepter.js'
+import { AllUsers } from './AllUsers.jsx'
 
 export const StateContext = createContext()
 
@@ -103,6 +104,7 @@ function App() {
           <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
+          <Route path='/getuser' element={<ProtectedRoutes>{<AllUsers />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
 
         </Routes>
