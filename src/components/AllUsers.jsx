@@ -6,19 +6,23 @@ import '../App.css'
 import axiosInstance from './axiosIntercepter.js';
 
 export function AllUsers() {
-    const [usersData, setUsersData] = useState({})
+    const [usersData, setUsersData] = useState([])
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
 
-    
+
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark')
     }
 
     const getUsersFn = async () => {
         const result = await axiosInstance.get('/getuser', {})
-        console.log('all values',result.data);
-        
+        // setUsersData((prev)=>({
+        //     ...prev,
+        //     data : result.data.data
+        // }))
+        setUsersData(result.data.data)
+        console.log('all values', result.data);
     }
 
     return (
@@ -32,11 +36,25 @@ export function AllUsers() {
 
                     <div className='form-body'>
                         <input type="button" className="btn" onClick={(e) => {
+                            e.target.style.display = 'none'
                             getUsersFn(e)
                         }} value="Fetch All Ac" />
-                        <span className='temp'>
-                            { }
-                        </span>
+                        <div className='table'>
+                            {usersData.map((row) => (
+                                <div className='eachRow' key={row._id}>
+                                    <span className='column'>id: {row._id}</span>
+                                    <span className='column'>Name: {row.name}</span>
+                                    <span className='column'>Age: {row.age}</span>
+                                    <span className='column'>Usersname: {row.usersname}</span>
+                                    <span className='column'>Password: {row.password}</span>
+                                    <span className='column'>Status: {row.status ? 'Active' : 'Inactive'}</span>
+                                    <span className='column'>Role: {row.role}</span>
+                                    <span className='column'>CreatedAt: {row.createdAt}</span>
+                                    <span className='column'>UpdatedAt: {row.updatedAt}</span>
+                                    <span className='column'>Version: {row.__v}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
