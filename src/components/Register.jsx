@@ -4,7 +4,7 @@ import { StateContext } from './App.jsx';
 import axios from 'axios';
 import '../App.css'
 
-export function Register() {
+export function Register({ popupMode = false }) {
 
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
@@ -75,13 +75,16 @@ export function Register() {
 
     return (
         <>
-            <div className='login-cont-div'>
-                <span className='login-left-span'></span>
-                <span className='login-right-span'>
-                    <div className='heading-cont'>
-                        <div className='component-heading'>Login</div >
-                        <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn} />
-                    </div>
+            <div className={popupMode ? "popup-register" : "login-cont-div"}>
+                {!popupMode && <span className='login-left-span'></span>}
+                <span className={popupMode ? "popup-right" : "login-right-span"}>
+
+                    {!popupMode && (
+                        <div className='heading-cont'>
+                            <div className='component-heading'>Register</div >
+                            <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn} />
+                        </div>
+                    )}
 
                     <div className='form-body'>
                         <div className='cont-of-inp'>

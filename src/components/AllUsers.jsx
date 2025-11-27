@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StateContext } from './App.jsx';
+import { Register } from './Register.jsx';
 import axios from 'axios';
 import '../App.css'
 import axiosInstance from './axiosIntercepter.js';
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
+    const [popupstate, setPopupstate] = useState(false)
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
 
@@ -30,16 +32,37 @@ export function AllUsers() {
             <div className='register-outer-cont'>
                 <div className='register-inner'>
                     <div className='heading-cont'>
-                        <div className='component-heading'>All Users</div >
+                        <div className='component-heading'>Admin Pannel</div >
                         <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn} />
                     </div>
 
                     <div className='form-body'>
-                        <input type="button" className="btn" onClick={(e) => {
-                            e.target.style.display = 'none'
-                            getUsersFn(e)
-                        }} value="Fetch All Ac" />
-                        <div className='table'>
+
+                        <span className='Add-Feth-cont' id='toggle-btn'>
+                            <input type="button" className="btnAdmin" onClick={(e) => {
+                                setPopupstate(prev => !prev);
+                                // setPopupstate(popupstate == true ? false : true )
+                            }} value="Add User" />
+                            {popupstate && (
+                                <div className="popup-cont">
+                                    <div className='heading-popup'>
+                                        <div className='component-heading' >Add User</div>
+                                        <input type="button" className='btn-user' id='close' value="Close" onClick={(e) => {
+                                            setPopupstate(prev => !prev);
+                                        }} />
+                                    </div>
+                                    <Register popupMode={true} />
+                                </div>
+                            )}
+
+                            <input type="button" className="btnAdmin" onClick={(e) => {
+                                // e.target.style.display = 'none'
+                                getUsersFn(e)
+                            }} value="Fetch All" />
+
+                        </span>
+
+                        <div className='table' >
                             {usersData.map((row) => (
                                 <div className='eachRow' key={row._id}>
                                     <span className='column'>id: {row._id}</span>
@@ -52,6 +75,8 @@ export function AllUsers() {
                                     <span className='column'>CreatedAt: {row.createdAt}</span>
                                     <span className='column'>UpdatedAt: {row.updatedAt}</span>
                                     <span className='column'>Version: {row.__v}</span>
+                                    <input type="button" value="Edit" className='btn-user' />
+                                    <input type="button" value="Delete" className='btn-user' />
                                 </div>
                             ))}
                         </div>
