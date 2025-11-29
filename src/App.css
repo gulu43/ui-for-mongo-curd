@@ -14,8 +14,8 @@
     --inp-border: 1px solid grey;
     --inp-border-bottom-color: 5px solid #0032e8;
     --error-msg: brown;
-    --btn-border-color: 1px solid gray;
-    --btn-text-color: #353535;
+    --btn1-border-color: 1px solid gray;
+    --btn1-text-color: #353535;
     --data-row-bg: #ffffff;
     --data-row-border: 1px solid #d5d5d5;
     --column-bg: #f0f0f0;
@@ -34,8 +34,8 @@
     --inp-border: 1px solid grey;
     --inp-border-bottom-color: 5px solid #000;
     --error-msg: brown;
-    --btn-border-color: 1px solid gray;
-    --btn-text-color: #353535;
+    --btn1-border-color: 1px solid gray;
+    --btn1-text-color: #353535;
     --data-row-bg: #1b1b1b;
     --data-row-border: 1px solid #333;
     --column-bg: #2a2a2a;
@@ -185,18 +185,18 @@ body {
     font-size: 95%;
 }
 
-.btn {
+.btn1 {
     width: 60%;
     height: 45px;
     border-radius: 5px;
-    border: var(--btn-border-color);
+    border: var(--btn1-border-color);
     font-size: 130%;
-    color: var(--btn-text-color);
+    color: var(--btn1-text-color);
     margin-top: 2%;
     margin-bottom: 5%;
 }
 
-.btn:hover {
+.btn1:hover {
     border-radius: 30px;
 }
 
@@ -251,7 +251,7 @@ body {
     margin-top: 20px;
 }
 
-.btn-demo {
+.btn1-demo {
     width: 300px;
     height: 45px;
     border-radius: 5px;
@@ -261,7 +261,7 @@ body {
     margin-top: 20px;
 }
 
-.btn-demo:hover {
+.btn1-demo:hover {
     border-radius: 30px;
 
 }
@@ -280,7 +280,7 @@ body {
 
 }
 
-#toggle-btn {
+#toggle-btn1 {
     position: relative;
 }
 
@@ -310,18 +310,18 @@ body {
     font-size: 14px;
 }
 
-.btnAdmin {
+.btn1Admin {
     width: 45%;
     height: 70px;
     border-radius: 5px;
-    border: var(--btn-border-color);
+    border: var(--btn1-border-color);
     font-size: 150%;
-    color: var(--btn-text-color);
+    color: var(--btn1-text-color);
     /* margin-top: 10px; */
     margin-bottom: 10px;
 }
 
-.btnAdmin:hover {
+.btn1Admin:hover {
     border-radius: 50px;
 }
 
@@ -334,12 +334,12 @@ body {
     gap: 20px;
 }
 
-.btn-user {
+.btn1-user {
     width: auto;
     height: auto;
     background-color: var(--bg-color);
     border-radius: 5px;
-    border: var(--btn-border-color);
+    border: var(--btn1-border-color);
     font-size: 100%;
     color: var(--text-color);
     padding: 8px 12px;
@@ -347,7 +347,7 @@ body {
     /* margin-top: 20px; */
 }
 
-.btn-user:hover {
+.btn1-user:hover {
     border-radius: 30px;
 }
 
@@ -367,7 +367,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: var(--btn-border-color);
+    border: var(--btn1-border-color);
 }
 
 .heading-popup{

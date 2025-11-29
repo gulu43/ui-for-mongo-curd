@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { ProtectedRoutes } from './ProtectedRoutes.jsx'
 import { LogOut } from './LogOut.jsx'
 import { InvalidRouts } from './InvalidRouts.jsx'
-import { Login } from './Login.jsx'
+import Login  from './Login.jsx'
 import { Register } from './Register.jsx'
 import { Refresh } from './Refresh.jsx'
 import { Home } from './Home.jsx'
@@ -14,6 +14,9 @@ import { DelAc } from './DelAc.jsx'
 import { setAccessTokenOutside, setNavigator } from "./redirect.js";
 import axiosInstance from './axiosIntercepter.js'
 import { AllUsers } from './AllUsers.jsx'
+import LoginPage from '../views/auth/login/Login.jsx'
+// import { RouterProvider } from 'react-router-dom';
+// import router from '../routes/index.jsx';
 
 export const StateContext = createContext()
 
@@ -89,6 +92,7 @@ function App() {
   return (
     <>
       <StateContext.Provider value={{ tokens, setTokens, theam, setTheam }} >
+
         <Routes>
           <Route path="/" element={
             tokens.accessToken
@@ -97,7 +101,7 @@ function App() {
                 ? <Navigate to="/home" />
                 : <Navigate to="/login" />
           } />
-          <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <Login />} />
+          <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <LoginPage />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <Register />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
