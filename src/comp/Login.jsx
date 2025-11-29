@@ -22,7 +22,7 @@ import { emailSchema, passwordSchema } from '../utils/validationSchema.js';
 // assets
 import DarkLogo from '../assets/images/logo-dark.svg';
 
-function Login({ className='', link }) {
+function Login({ className = '', link }) {
 
   const navigate = useNavigate()
   const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
@@ -34,9 +34,9 @@ function Login({ className='', link }) {
     usersname: '',
     password: ''
   })
-  // useEffect(() => {
-  //     console.log("data in login: ", data)
-  // }, [data])
+  useEffect(() => {
+      console.log("data in login: ", data)
+  }, [data])
 
   const changeTheamFn = () => {
     theam == 'dark' ? setTheam('light') : setTheam('dark');
@@ -155,7 +155,7 @@ function Login({ className='', link }) {
   const onSubmit = () => {
     // reset();
     console.log('called');
-    
+
   };
 
 
@@ -163,18 +163,25 @@ function Login({ className='', link }) {
     <MainCard className="mb-0" >
       <div className="text-center">
         <a>
-          <Image src={DarkLogo} alt="img" style={{height:'30px'}} /> Demo
+          <Image src={DarkLogo} alt="img" style={{ height: '30px' }} /> Demo
         </a>
       </div>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form >
         <h4 className={`text-center f-w-500 mt-4 mb-3 ${className}`}>Login</h4>
         <Form.Group className="mb-3" controlId="formEmail">
           <Form.Control
-            type="email"
-            placeholder="Email Address"
-            {...register('email', emailSchema)}
-            isInvalid={!!errors.email}
+            type="text"
+            placeholder="Username"
+            // {...register('email', emailSchema)}
+            onChange={(e) => {
+              setData((prev) => ({
+                ...prev,
+                usersname: e.target.value
+              }))
+            }}
+            isInvalid={!!errorMessage.usersname}
             className={className && 'bg-transparent border-white text-white border-opacity-25 '}
+
           />
           <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
         </Form.Group>
@@ -183,8 +190,14 @@ function Login({ className='', link }) {
             <Form.Control
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
-              {...register('password', passwordSchema)}
-              isInvalid={!!errors.password}
+              // {...register('password', passwordSchema)}
+              onChange={(e) => {
+                setData((prev) => ({
+                  ...prev,
+                  password: e.target.value
+                }))
+              }}
+              isInvalid={!!errorMessage.password}
               className={className && 'bg-transparent border-white text-white border-opacity-25 '}
             />
             <Button onClick={togglePasswordVisibility}>
@@ -208,9 +221,7 @@ function Login({ className='', link }) {
           </a>
         </Stack>
         <div className="text-center mt-4">
-          <Button type="submit" className="shadow px-sm-4">
-            Login
-          </Button>
+          <input type='button' className=" btn btn-primary shadow px-sm-4" value='Login' onClick={(e) => { loginFn(e) }} />
         </div>
         <Stack direction="horizontal" className="justify-content-between align-items-end mt-4">
           <h6 className={`f-w-500 mb-0 ${className}`}>Don't have an Account?</h6>
