@@ -15,6 +15,7 @@ import { setAccessTokenOutside, setNavigator } from "./redirect.js";
 import axiosInstance from './axiosIntercepter.js'
 import { AllUsers } from './AllUsers.jsx'
 import LoginPage from '../views/auth/login/Login.jsx'
+import RegisterPage from '../views/auth/register/Register.jsx'
 // import { RouterProvider } from 'react-router-dom';
 // import router from '../routes/index.jsx';
 
@@ -102,7 +103,7 @@ function App() {
                 : <Navigate to="/login" />
           } />
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <LoginPage />} />
-          <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <Register />} />
+          <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <RegisterPage />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
           <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
           <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />

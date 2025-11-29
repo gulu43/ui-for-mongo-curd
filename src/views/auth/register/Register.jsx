@@ -1,5 +1,5 @@
 // project-imports
-import AuthRegisterForm from 'sections/auth/AuthRegister';
+import { Register } from '../../../comp/Register.jsx';
 
 // ===========================|| AUTH - REGISTER V1 ||=========================== //
 
@@ -15,7 +15,7 @@ export default function RegisterPage() {
               <span className="r s"></span>
               <span className="r"></span>
             </div>
-            <AuthRegisterForm link="/login" />
+            <Register link="/login" />
           </div>
         </div>
       </div>
