@@ -12,6 +12,56 @@ import NavGroup from './NavGroup';
 // ==============================|| NAVIGATION ||============================== //
 
 export default function Navigation({ selectedItems, setSelectedItems, setSelectTab }) {
+  const menuItems = {
+    items: [
+      {
+        id: 'group-pages',
+        title: 'Pages',
+        type: 'group',
+        icon: <i className="ti ti-file"></i>,
+
+        children: [
+          {
+            id: 'collapse-pages',
+            title: 'Pages',
+            type: 'collapse',
+            icon: <i className="ti ti-notebook"></i>,
+
+            children: [
+              {
+                id: 'page-update',
+                title: 'Update',
+                type: 'item',
+                url: '/pages/update',
+                icon: <i className="ti ti-edit"></i>
+              },
+              {
+                id: 'page-profile',
+                title: 'Profile',
+                type: 'item',
+                url: '/pages/profile',
+                icon: <i className="ti ti-user"></i>
+              },
+              {
+                id: 'page-signout',
+                title: 'Sign Out',
+                type: 'item',
+                url: '/logout',
+                icon: <i className="ti ti-logout"></i>
+              },
+              {
+                id: 'page-adminpanel',
+                title: 'Admin Panel',
+                type: 'item',
+                url: '/admin',
+                icon: <i className="ti ti-dashboard"></i>
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
   const [selectedID, setSelectedID] = useState('');
   const [selectedLevel, setSelectedLevel] = useState(0);
 
@@ -61,7 +111,7 @@ export default function Navigation({ selectedItems, setSelectedItems, setSelectT
             remItems={remItems}
             lastItemId={lastItemId}
             item={item}
-            setSelectTab={setSelectTab ?? (() => {})}
+            setSelectTab={setSelectTab ?? (() => { })}
           />
         );
       default:

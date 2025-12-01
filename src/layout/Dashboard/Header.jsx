@@ -15,8 +15,8 @@ import SimpleBarScroll from '../../components/third-party/SimpleBar.jsx';
 import { handlerDrawerOpen, useGetMenuMaster } from '../../api/menu';
 
 // assets
-import Img1 from '../../assets/images/user/avatar-1.png';
-import Img2 from '../../assets/images/user/avatar-2.png';
+import Img1 from '../../assets/images/user/avatar-2.png';
+import Img2 from '../../assets/images/user/avatar-1.png';
 import Img3 from '../../assets/images/user/avatar-3.png';
 import Img4 from '../../assets/images/user/avatar-4.png';
 import Img5 from '../../assets/images/user/avatar-5.png';
@@ -96,7 +96,7 @@ export default function Header() {
               </Nav.Link>
             </Nav.Item>
 
-            <Dropdown className="pc-h-item dropdown">
+            {/* <Dropdown className="pc-h-item dropdown">
               <Dropdown.Toggle variant="link" className="pc-head-link arrow-none m-0 trig-drp-search" id="dropdown-search">
                 <i className="ph ph-magnifying-glass" />
               </Dropdown.Toggle>
@@ -105,12 +105,12 @@ export default function Header() {
                   <Form.Control type="search" placeholder="Search here. . ." className="border-0 shadow-none" />
                 </Form>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
           </Nav>
         </div>
         <div className="ms-auto">
           <Nav className="list-unstyled">
-            <Dropdown className="pc-h-item" align="end">
+            {/* <Dropdown className="pc-h-item" align="end">
               <Dropdown.Toggle className="pc-head-link me-0 arrow-none" variant="link" id="notification-dropdown">
                 <i className="ph ph-bell" />
                 <span className="badge bg-success pc-h-badge">3</span>
@@ -161,7 +161,7 @@ export default function Header() {
                   </Link>
                 </div>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
             <Dropdown className="pc-h-item" align="end">
               <Dropdown.Toggle
                 className="pc-head-link arrow-none me-0"
@@ -180,22 +180,22 @@ export default function Header() {
                       <Image src={Img2} alt="user-avatar" className="user-avatar wid-35" roundedCircle />
                     </div>
                     <Stack gap={1}>
-                      <h6 className="text-white mb-0">Carson Darrin 🖖</h6>
-                      <span className="text-white text-opacity-75">carson.darrin@company.io</span>
+                      <h6 className="text-white mb-0">{'User name'}</h6>
+                      <span className="text-white text-opacity-75">{'companey_name@company.xyz'}</span>
                     </Stack>
                   </Stack>
                 </Dropdown.Header>
 
                 <div className="dropdown-body">
                   <div className="profile-notification-scroll position-relative" style={{ maxHeight: 'calc(100vh - 225px)' }}>
-                    <Dropdown.Item as={Link} to="#" className="justify-content-start">
+                    {/* <Dropdown.Item as={Link} to="#" className="justify-content-start">
                       <i className="ph ph-gear me-2" />
                       Settings
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="#" className="justify-content-start">
                       <i className="ph ph-share-network me-2" />
                       Share
-                    </Dropdown.Item>
+                    </Dropdown.Item> */}
                     <Dropdown.Item as={Link} to="#" className="justify-content-start">
                       <i className="ph ph-lock-key me-2" />
                       Change Password

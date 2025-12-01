@@ -15,12 +15,13 @@ export default function Footer() {
         <Row className="justify-content-center justify-content-md-between">
           {/* Footer Text */}
           <Col xs="auto" className="my-1">
-            {/* <p className="m-0">
-              {branding.brandName} ♥ Crafted By Team{' '}
+            <p className="m-0">
+              ♥ Crafted by gulu43
+              {/* {branding.brandName} ♥ Crafted By Team{' '}
               <a href="https://codedthemes.com/" target="_blank" rel="noopener noreferrer" className="text-primary">
                 CodedThemes
-              </a>
-            </p> */}
+              </a> */}
+            </p>
           </Col>
 
           {/* Footer Links */}
@@ -29,9 +30,9 @@ export default function Footer() {
               <Nav.Link className="p-0" as="a" href="/">
                 Home
               </Nav.Link>
-              <Nav.Link className="p-0" as="a" href="https://codedthemes.gitbook.io/datta" target="_blank" rel="noopener noreferrer">
+              {/* <Nav.Link className="p-0" as="a" href="https://codedthemes.gitbook.io/datta" target="_blank" rel="noopener noreferrer">
                 Documentation
-              </Nav.Link>
+              </Nav.Link> */}
               <Nav.Link className="p-0" as="a" href="https://codedthemes.support-hub.io/" target="_blank" rel="noopener noreferrer">
                 Support
               </Nav.Link>

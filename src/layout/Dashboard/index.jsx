@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 // project-imports
-import Breadcrumbs from '../../components/Breadcrumbs.jsx';
+// import Breadcrumbs from '../../components/Breadcrumbs.jsx';
 import Drawer from './Drawer';
 import Footer from './Footer';
 import Header from './Header';
@@ -9,17 +9,18 @@ import Header from './Header';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
-export default function MainLayout() {
+export default function MainLayout({ page }) {
   return (
     <div>
       <Drawer />
       <Header />
       <div className="pc-container">
         <div className="pc-content">
-          <Breadcrumbs />
-          <div>ok it is rendering</div>
+          {/* <Breadcrumbs /> */}
+          {/* <div>ok it is rendering</div> */}
           {/* <NavigationScroll> */}
-            <Outlet />
+          {/* <Outlet /> */}
+          {page}
           {/* </NavigationScroll> */}
         </div>
       </div>

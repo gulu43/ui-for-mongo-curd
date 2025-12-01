@@ -15,6 +15,58 @@ import SimpleBarScroll from '../../../../components/third-party/SimpleBar.jsx';
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
 export default function DrawerContent({ selectedItems, setSelectedItems }) {
+  
+  const menuItems = {
+    items: [
+      {
+        id: 'group-pages',
+        title: 'Pages',
+        type: 'group',
+        icon: <i className="ti ti-file"></i>,
+
+        children: [
+          {
+            id: 'collapse-pages',
+            title: 'Pages',
+            type: 'collapse',
+            icon: <i className="ti ti-notebook"></i>,
+
+            children: [
+              {
+                id: 'page-update',
+                title: 'Update',
+                type: 'item',
+                url: '/pages/update',
+                icon: <i className="ti ti-edit"></i>
+              },
+              {
+                id: 'page-profile',
+                title: 'Profile',
+                type: 'item',
+                url: '/pages/profile',
+                icon: <i className="ti ti-user"></i>
+              },
+              {
+                id: 'page-signout',
+                title: 'Sign Out',
+                type: 'item',
+                url: '/logout',
+                icon: <i className="ti ti-logout"></i>
+              },
+              {
+                id: 'page-adminpanel',
+                title: 'Admin Panel',
+                type: 'item',
+                url: '/admin',
+                icon: <i className="ti ti-dashboard"></i>
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
   const [selectTab, setSelectTab] = useState(menuItems.items[0]);
   const { menuMaster } = useGetMenuMaster();
   const { pathname } = useLocation();

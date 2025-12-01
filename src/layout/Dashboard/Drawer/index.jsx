@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-
+import { Link } from 'react-router-dom';
 // react-bootstrap
 import Image from 'react-bootstrap/Image';
 
 // third-party
 
 // project-imports
-// import DrawerContent from './DrawerContent';
+import DrawerContent from './DrawerContent';
 import { handlerDrawerOpen, useGetMenuMaster } from '../../../api/menu.js';
 
 // assets
-import logo from '../../../assets/images/logo-white.svg';
+import logo from '../../../assets/images/logo-dark.svg';
 
 // ==============================|| MAIN LAYOUT - DRAWER ||============================== //
 
@@ -44,13 +44,81 @@ export default function MainDrawer() {
       <div className="navbar-wrapper">
         <div className="m-header">
           <a className="b-brand text-primary">
-            <Image src={logo} fluid className="logo logo-lg" alt="logo" />
+            <Image src={logo} fluid className="logo logo-lg" alt="logo" style={{ height: '35px', marginRight: '10px' }} /> <span>Companey Heading</span>
           </a>
         </div>
+        <div>
 
+        </div>
         {/* <div className="navbar-content">
           <DrawerContent selectedItems={selectedItems} setSelectedItems={setSelectedItems} />
         </div> */}
+
+
+        <div className="navbar-content">
+          <ul className="pc-navbar">
+
+            {/* ---------- Dashboard Heading ---------- */}
+            <li className="pc-item pc-caption">
+              <label>Dashboard</label>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/home">
+                <span className="pc-micon"><i className="ph-duotone ph-house"></i></span>
+                Home
+              </Link>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/updatepassword">
+                <span className="pc-micon"><i className="ph-duotone ph-chart-bar"></i></span>
+                UpdatePassword
+              </Link>
+            </li>
+
+            {/* ---------- Pages Heading ---------- */}
+            <li className="pc-item pc-caption">
+              <label>Pages</label>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/users">
+                <span className="pc-micon"><i className="ph-duotone ph-users"></i></span>
+                Users
+              </Link>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/products">
+                <span className="pc-micon"><i className="ph-duotone ph-bag"></i></span>
+                Products
+              </Link>
+            </li>
+
+            {/* ---------- Settings Heading ---------- */}
+            <li className="pc-item pc-caption">
+              <label>Settings</label>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/profile">
+                <span className="pc-micon"><i className="ph-duotone ph-user-circle"></i></span>
+                Profile
+              </Link>
+            </li>
+
+            <li className="pc-item">
+              <Link className="pc-link" to="/logout">
+                <span className="pc-micon"><i className="ph-duotone ph-sign-out"></i></span>
+                Logout
+              </Link>
+            </li>
+
+          </ul>
+        </div>
+
+
       </div>
       {drawerOpen && isMobile && <div className="pc-menu-overlay" ref={overlayRef} />}
     </nav>

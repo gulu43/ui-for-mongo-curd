@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { ProtectedRoutes } from './ProtectedRoutes.jsx'
 import { LogOut } from './LogOut.jsx'
 import { InvalidRouts } from './InvalidRouts.jsx'
-import Login  from './Login.jsx'
+import Login from './Login.jsx'
 import { Register } from './Register.jsx'
 import { Refresh } from './Refresh.jsx'
 import { Home } from './Home.jsx'
@@ -107,8 +107,8 @@ function App() {
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <LoginPage />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <RegisterPage />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
-          <Route path='/home' element={<ProtectedRoutes>{<MainLayout/>}</ProtectedRoutes>} />
-          <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />
+          <Route path='/home' element={<ProtectedRoutes>{<MainLayout page={<Home />} />}</ProtectedRoutes>} />
+          <Route path='/updatepassword' element={<ProtectedRoutes>{<MainLayout page={<UpdatePassword />} />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
           <Route path='/getuser' element={<ProtectedRoutes>{<AllUsers />}</ProtectedRoutes>} />
