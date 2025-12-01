@@ -19,6 +19,8 @@ import RegisterPage from '../views/auth/register/Register.jsx'
 // import { RouterProvider } from 'react-router-dom';
 // import router from '../routes/index.jsx';
 
+import MainLayout from '../layout/Dashboard/index.jsx'
+
 export const StateContext = createContext()
 
 function App() {
@@ -105,7 +107,7 @@ function App() {
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <LoginPage />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <RegisterPage />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
-          <Route path='/home' element={<ProtectedRoutes>{<Home />}</ProtectedRoutes>} />
+          <Route path='/home' element={<ProtectedRoutes>{<MainLayout/>}</ProtectedRoutes>} />
           <Route path='/updatepassword' element={<ProtectedRoutes>{<UpdatePassword />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />

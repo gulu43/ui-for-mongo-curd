@@ -35,7 +35,7 @@ function Login({ className = '', link }) {
     password: ''
   })
   useEffect(() => {
-      console.log("data in login: ", data)
+    console.log("data in login: ", data)
   }, [data])
 
   const changeTheamFn = () => {
