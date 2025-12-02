@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css'
 import axios from 'axios';
 import axiosInstance from './axiosIntercepter';
+import Button from 'react-bootstrap/Button';
 
 export function LogOut() {
     const navigate = useNavigate()
@@ -25,8 +26,11 @@ export function LogOut() {
         }
     }
     return (
-        <input type="button" className="btn" onClick={(e) => {
+        // <input type="button" variant="danger" onClick={(e) => {
+        //     logout(e)
+        // }} value="Logout btn from LogoutComponent" />
+        <Button variant="danger" onClick={(e) => {
             logout(e)
-        }} value="Logout btn from LogoutComponent" />
+        }} >Logout</Button>
     );
 }

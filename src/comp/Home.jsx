@@ -3,7 +3,8 @@ import axiosInstance from './axiosIntercepter.js'
 import { useNavigate } from 'react-router-dom';
 import { goToLogin } from './redirect.js';
 import { LogOut } from './LogOut.jsx';
-import '../App.css'
+// import '../App.css'
+import '../index.scss'
 
 export function Home() {
 
@@ -15,8 +16,8 @@ export function Home() {
 
             const result = await Promise.all([
                 // axiosInstance.get('/getuser?usersname=Gulu43'),
+                axiosInstance.get('/getuser?usersname=Zaid67'),
                 axiosInstance.get('/getuser?usersname=Abhi07'),
-                axiosInstance.get('/getuser?usersname=Aryan15'),
             ])
             // const result = await axiosInstance.get('/getuser?usersname=Gulu43')
             // const result1 = await axiosInstance.get('/getuser?usersname=Abhi07')
@@ -42,7 +43,7 @@ export function Home() {
             <h2>Home</h2>
             
             <LogOut />
-            <input type="button" className="btn" onClick={(e) => {
+            <input type="button" className="btn btn-primary" onClick={(e) => {
                 checkUsersFn(e)
             }} value="Submit" />
 
