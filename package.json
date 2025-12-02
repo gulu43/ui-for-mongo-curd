@@ -23,6 +23,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.67.0",
     "react-router-dom": "^7.9.5",
+    "react-toastify": "^11.0.5",
     "saas": "^1.0.0",
     "simplebar": "^6.3.3",
     "simplebar-react": "^3.3.2",

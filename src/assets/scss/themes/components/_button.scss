@@ -72,9 +72,9 @@
     }
   }
 }
-.btn:hover {
-  border-radius: 20px;
-}
+// .btn:hover {
+//   border-radius: 20px;
+// }
 @each $color, $value in $theme-colors {
   // light color start
   .btn-light-#{$color} {

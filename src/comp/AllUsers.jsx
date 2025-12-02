@@ -9,6 +9,8 @@ import { Table } from 'react-bootstrap';
 import MainCard from '../components/MainCard.jsx';
 import '../index.scss';
 import { Button } from 'react-bootstrap';
+import api from './axiosIntercepter.js';
+import { toast } from "react-toastify";
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
@@ -25,25 +27,41 @@ export function AllUsers() {
         setUsersData(result.data.data)
         console.log('all values', result.data);
     }
-
+    const deleteUserFn = async (id) => {
+        const response = await api.delete('/deleteaccount', {
+            data: {userId: id}
+        })
+        console.log(response);
+        if (response.status == 200) {
+            toast.success(response.data.message)
+            getUsersFn()
+        }else{
+            toast.error(response?.data?.message || "Something went wrong")
+        }
+        
+    }
     return (
         <>
-            <MainCard title="Users Data" >
-                <span className='Add-Feth-cont' id='toggle-btn'>
+            <MainCard >
 
-                    <button variant="outline-danger" type="button" className="btn btn-primary" onClick={() => {
-                        setPopupstate(prev => !prev);
-                    }}>All User</button>
+                <span className='Add-Feth-cont' id='toggle-btn'>
+                    <div className='flex-between'>
+                        <span><b>Users Data</b> </span>
+                        <button variant="outline-danger" type="button" className="btn btn-primary" onClick={() => {
+                            setPopupstate(prev => !prev);
+                        }}>Add User</button>
+                    </div>
+
 
                     {popupstate && (
                         <div className="popup-cont">
                             <div className='heading-popup'>
                                 <h5 className='' >Add User</h5>
                                 {/* <input type="button" className='btn-user' id='close' */}
-                                    <Button variant="outline-danger" onClick={() => {
+                                <Button variant="outline-danger" onClick={() => {
 
-                                        setPopupstate(prev => !prev);
-                                    }}>x</Button>
+                                    setPopupstate(prev => !prev);
+                                }}>x</Button>
 
 
                             </div>
@@ -53,22 +71,24 @@ export function AllUsers() {
 
                 </span>
 
-                <Table responsive striped className="mb-0 table-striped">
-                    <thead>
+                <Table responsive striped hover className="mb-0 table-striped" style={{overflowX: 'scroll'}}>
+                    
+                    {/* <tbody style={{overflowX: 'scroll', marginLeft: '22%'}}> */}
+                    <tbody style={{width: '100%'}} >
                         <tr>
                             <th>id</th>
                             <th>Name</th>
                             <th>Age</th>
                             <th>Usersname</th>
+                            <th>Password</th>
                             <th>Status</th>
                             <th>Role</th>
                             <th>CreatedAt</th>
                             <th>UpdatedAt</th>
                             <th>Version</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
-                    </thead>
-
-                    <tbody>
                         {usersData.map((row) => (
                             <tr key={row._id}>
                                 <td>{row._id}</td>
@@ -82,10 +102,13 @@ export function AllUsers() {
                                 <td>{row.updatedAt}</td>
                                 <td>{row.__v}</td>
                                 <td>
-                                    <button className='btn btn-warning'>Edit</button>
+                                    <button className='btn btn-warning btn-sm'>Edit</button>
                                 </td>
                                 <td>
-                                    <button className='btn btn-danger'>Delete</button>
+                                    <button className='btn btn-danger btn-sm' onClick={() => {
+                                        // console.log(row._id);
+                                        deleteUserFn(row._id)
+                                    }}>Delete</button>
                                 </td>
                             </tr>
                         ))}

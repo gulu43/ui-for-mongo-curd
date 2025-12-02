@@ -16,6 +16,8 @@ import axiosInstance from './axiosIntercepter.js'
 import { AllUsers } from './AllUsers.jsx'
 import LoginPage from '../views/auth/login/Login.jsx'
 import RegisterPage from '../views/auth/register/Register.jsx'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import { RouterProvider } from 'react-router-dom';
 // import router from '../routes/index.jsx';
 
@@ -95,6 +97,7 @@ function App() {
   return (
     <>
       <StateContext.Provider value={{ tokens, setTokens, theam, setTheam }} >
+        <ToastContainer position="top-right" autoClose={3500} />
 
         <Routes>
           <Route path="/" element={
