@@ -111,7 +111,7 @@ function App() {
           <Route path='/updatepassword' element={<ProtectedRoutes>{<MainLayout page={<UpdatePassword />} />}</ProtectedRoutes>} />
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
-          <Route path='/getuser' element={<ProtectedRoutes>{<AllUsers />}</ProtectedRoutes>} />
+          <Route path='/getuser' element={<ProtectedRoutes>{<MainLayout page={<AllUsers />} />}</ProtectedRoutes>} />
           <Route path='*' element={<InvalidRouts />} />
 
         </Routes>

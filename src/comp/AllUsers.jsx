@@ -5,6 +5,10 @@ import { Register } from './Register.jsx';
 import axios from 'axios';
 import '../App.css'
 import axiosInstance from './axiosIntercepter.js';
+import { Table } from 'react-bootstrap';
+import MainCard from '../components/MainCard.jsx';
+import '../index.scss';
+import { Button } from 'react-bootstrap';
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
@@ -12,77 +16,84 @@ export function AllUsers() {
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
 
-
-    const changeTheamFn = () => {
-        theam == 'dark' ? setTheam('light') : setTheam('dark')
-    }
+    useEffect(() => {
+        getUsersFn()
+    }, [])
 
     const getUsersFn = async () => {
         const result = await axiosInstance.get('/getuser', {})
-        // setUsersData((prev)=>({
-        //     ...prev,
-        //     data : result.data.data
-        // }))
         setUsersData(result.data.data)
         console.log('all values', result.data);
     }
 
     return (
         <>
-            <div className='register-outer-cont'>
-                <div className='register-inner'>
-                    <div className='heading-cont'>
-                        <div className='component-heading'>Admin Pannel</div >
-                        <img className='themIcon' src="./contrast.png" alt="O" onClick={changeTheamFn} />
-                    </div>
+            <MainCard title="Users Data" >
+                <span className='Add-Feth-cont' id='toggle-btn'>
 
-                    <div className='form-body'>
+                    <button variant="outline-danger" type="button" className="btn btn-primary" onClick={() => {
+                        setPopupstate(prev => !prev);
+                    }}>All User</button>
 
-                        <span className='Add-Feth-cont' id='toggle-btn'>
-                            <input type="button" className="btnAdmin" onClick={(e) => {
-                                setPopupstate(prev => !prev);
-                                // setPopupstate(popupstate == true ? false : true )
-                            }} value="Add User" />
-                            {popupstate && (
-                                <div className="popup-cont">
-                                    <div className='heading-popup'>
-                                        <div className='component-heading' >Add User</div>
-                                        <input type="button" className='btn-user' id='close' value="Close" onClick={(e) => {
-                                            setPopupstate(prev => !prev);
-                                        }} />
-                                    </div>
-                                    <Register popupMode={true} />
-                                </div>
-                            )}
+                    {popupstate && (
+                        <div className="popup-cont">
+                            <div className='heading-popup'>
+                                <h5 className='' >Add User</h5>
+                                {/* <input type="button" className='btn-user' id='close' */}
+                                    <Button variant="outline-danger" onClick={() => {
 
-                            <input type="button" className="btnAdmin" onClick={(e) => {
-                                // e.target.style.display = 'none'
-                                getUsersFn(e)
-                            }} value="Fetch All" />
+                                        setPopupstate(prev => !prev);
+                                    }}>x</Button>
 
-                        </span>
 
-                        <div className='table' >
-                            {usersData.map((row) => (
-                                <div className='eachRow' key={row._id}>
-                                    <span className='column'>id: {row._id}</span>
-                                    <span className='column'>Name: {row.name}</span>
-                                    <span className='column'>Age: {row.age}</span>
-                                    <span className='column'>Usersname: {row.usersname}</span>
-                                    <span className='column'>Password: {row.password}</span>
-                                    <span className='column'>Status: {row.status ? 'Active' : 'Inactive'}</span>
-                                    <span className='column'>Role: {row.role}</span>
-                                    <span className='column'>CreatedAt: {row.createdAt}</span>
-                                    <span className='column'>UpdatedAt: {row.updatedAt}</span>
-                                    <span className='column'>Version: {row.__v}</span>
-                                    <input type="button" value="Edit" className='btn-user' />
-                                    <input type="button" value="Delete" className='btn-user' />
-                                </div>
-                            ))}
+                            </div>
+                            <Register popupMode={true} />
                         </div>
-                    </div>
-                </div>
-            </div>
+                    )}
+
+                </span>
+
+                <Table responsive striped className="mb-0 table-striped">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Usersname</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>CreatedAt</th>
+                            <th>UpdatedAt</th>
+                            <th>Version</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {usersData.map((row) => (
+                            <tr key={row._id}>
+                                <td>{row._id}</td>
+                                <td>{row.name}</td>
+                                <td>{row.age}</td>
+                                <td>{row.usersname}</td>
+                                <td>{row.password}</td>
+                                <td>{row.status ? 'Active' : 'Inactive'}</td>
+                                <td>{row.role}</td>
+                                <td>{row.createdAt}</td>
+                                <td>{row.updatedAt}</td>
+                                <td>{row.__v}</td>
+                                <td>
+                                    <button className='btn btn-warning'>Edit</button>
+                                </td>
+                                <td>
+                                    <button className='btn btn-danger'>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </MainCard>
+
+
         </>
     );
 }
