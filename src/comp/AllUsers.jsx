@@ -10,11 +10,13 @@ import MainCard from '../components/MainCard.jsx';
 import '../index.scss';
 import { Button } from 'react-bootstrap';
 import api from './axiosIntercepter.js';
+import { EditUserDetails } from './EditUserDetails.jsx';
 import { toast } from "react-toastify";
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
     const [popupstate, setPopupstate] = useState(false)
+    const [popupstate2, setPopupstate2] = useState(false)
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
 
@@ -27,18 +29,19 @@ export function AllUsers() {
         setUsersData(result.data.data)
         console.log('all values', result.data);
     }
+    
     const deleteUserFn = async (id) => {
         const response = await api.delete('/deleteaccount', {
-            data: {userId: id}
+            data: { userId: id }
         })
         console.log(response);
         if (response.status == 200) {
             toast.success(response.data.message)
             getUsersFn()
-        }else{
+        } else {
             toast.error(response?.data?.message || "Something went wrong")
         }
-        
+
     }
     return (
         <>
@@ -47,7 +50,7 @@ export function AllUsers() {
                 <span className='Add-Feth-cont' id='toggle-btn'>
                     <div className='flex-between'>
                         <span><b>Users Data</b> </span>
-                        <button variant="outline-danger" type="button" className="btn btn-primary" onClick={() => {
+                        <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             setPopupstate(prev => !prev);
                         }}>Add User</button>
                     </div>
@@ -71,10 +74,10 @@ export function AllUsers() {
 
                 </span>
 
-                <Table responsive striped hover className="mb-0 table-striped" style={{overflowX: 'scroll'}}>
-                    
+                <Table responsive striped hover className="mb-0 table-striped" style={{ overflowX: 'scroll' }}>
+
                     {/* <tbody style={{overflowX: 'scroll', marginLeft: '22%'}}> */}
-                    <tbody style={{width: '100%'}} >
+                    <tbody style={{ width: '100%' }} >
                         <tr>
                             <th>id</th>
                             <th>Name</th>
@@ -102,7 +105,25 @@ export function AllUsers() {
                                 <td>{row.updatedAt}</td>
                                 <td>{row.__v}</td>
                                 <td>
-                                    <button className='btn btn-warning btn-sm'>Edit</button>
+                                    <button className='btn btn-warning btn-sm' onClick={() => {
+                                        // editUserFn(row._id)
+                                        setPopupstate2(prev => !prev)
+                                    }}>Edit</button>
+
+                                    {popupstate2 && (
+                                        <div className="popup-cont">
+                                            <div className='heading-popup'>
+                                                <h5 className='' >Edit User</h5>
+                                                {/* <input type="button" className='btn-user' id='close' */}
+                                                <Button variant="outline-danger" onClick={() => {
+
+                                                    setPopupstate2(prev => !prev);
+                                                }}>x</Button>
+                                            </div>
+                                            <EditUserDetails _id={row._id} reloade={getUsersFn} />
+                                        </div>
+                                    )}
+
                                 </td>
                                 <td>
                                     <button className='btn btn-danger btn-sm' onClick={() => {

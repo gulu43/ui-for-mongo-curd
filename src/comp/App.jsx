@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 // import router from '../routes/index.jsx';
 
 import MainLayout from '../layout/Dashboard/index.jsx'
+import { EditUserDetails } from './EditUserDetails.jsx'
 
 export const StateContext = createContext()
 
@@ -115,7 +116,7 @@ function App() {
           <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
           <Route path='/getuser' element={<ProtectedRoutes>{<MainLayout page={<AllUsers />} />}</ProtectedRoutes>} />
-          <Route path='*' element={<InvalidRouts />} />
+          <Route path='*' element={<EditUserDetails />} />
 
         </Routes>
       </StateContext.Provider>
