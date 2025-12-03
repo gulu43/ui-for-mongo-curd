@@ -46,8 +46,8 @@ export function Register({ className = '', link = '' }) {
 
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');
-
     }
+    
     function checkValidetion() {
         let InvalidFields = {}
         if (data.name == '') {

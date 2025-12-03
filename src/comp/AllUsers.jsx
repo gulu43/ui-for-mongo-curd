@@ -17,6 +17,8 @@ export function AllUsers() {
     const [usersData, setUsersData] = useState([])
     const [popupstate, setPopupstate] = useState(false)
     const [popupstate2, setPopupstate2] = useState(false)
+    const [selectedUserId, setSelectedUserId] = useState(null)
+
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
 
@@ -29,7 +31,7 @@ export function AllUsers() {
         setUsersData(result.data.data)
         console.log('all values', result.data);
     }
-    
+
     const deleteUserFn = async (id) => {
         const response = await api.delete('/deleteaccount', {
             data: { userId: id }
@@ -68,7 +70,9 @@ export function AllUsers() {
 
 
                             </div>
-                            <Register popupMode={true} />
+                            {/* <Register popupMode={true} /> */}
+                            <EditUserDetails _id={{}} reloade={getUsersFn} par={'add'} />
+
                         </div>
                     )}
 
@@ -106,23 +110,12 @@ export function AllUsers() {
                                 <td>{row.__v}</td>
                                 <td>
                                     <button className='btn btn-warning btn-sm' onClick={() => {
-                                        // editUserFn(row._id)
-                                        setPopupstate2(prev => !prev)
+                                        // setSelectedUserId(row._id)
+                                        (!selectedUserId) ? setSelectedUserId(row._id) : setSelectedUserId(null)
+                                        // setPopupstate2(prev => !prev)
+
                                     }}>Edit</button>
 
-                                    {popupstate2 && (
-                                        <div className="popup-cont">
-                                            <div className='heading-popup'>
-                                                <h5 className='' >Edit User</h5>
-                                                {/* <input type="button" className='btn-user' id='close' */}
-                                                <Button variant="outline-danger" onClick={() => {
-
-                                                    setPopupstate2(prev => !prev);
-                                                }}>x</Button>
-                                            </div>
-                                            <EditUserDetails _id={row._id} reloade={getUsersFn} />
-                                        </div>
-                                    )}
 
                                 </td>
                                 <td>
@@ -135,6 +128,20 @@ export function AllUsers() {
                         ))}
                     </tbody>
                 </Table>
+                        {selectedUserId && (
+                            <div className="popup-cont">
+                                <div className='heading-popup'>
+                                    <h5 className='' >Edit User</h5>
+                                    {/* <input type="button" className='btn-user' id='close' */}
+                                    <Button variant="outline-danger" onClick={() => {
+                                        setSelectedUserId(null)
+                                    }}>x</Button>
+                                </div>
+
+                                {console.log('passed-------------------------: ', selectedUserId)}
+                                <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
+                            </div>
+                        )}
             </MainCard>
 
 

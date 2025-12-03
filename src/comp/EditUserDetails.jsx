@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import '../index.scss'
 
 
-export function EditUserDetails({ _id ,reloade}) {
+export function EditUserDetails({ _id, reloade, par }) {
+    let handelClick;
 
     const [userId] = useState(_id);
     useEffect(() => {
@@ -31,7 +32,13 @@ export function EditUserDetails({ _id ,reloade}) {
 
     const updateUserFn = async (e) => {
         e.preventDefault();
-        const result = await api.patch('/updateuser', data)
+
+        const payload = {
+            ...data,
+            status: data.status === "true"
+        };
+
+        const result = await api.patch('/updateuser', payload)
         if (result.status == 200) {
             toast.success(result.data.message)
             reloade()
@@ -40,11 +47,59 @@ export function EditUserDetails({ _id ,reloade}) {
         }
     }
 
+    const registerFn = async (e) => {
+        e.preventDefault()
+        try {
+            // const check = checkValidetion()
+
+            setData(prev => {
+                const { _id, ...rest } = prev;
+                return rest;
+            });
+
+            const payload = {
+                ...data,
+                status: data.status === "true"
+            };
+
+            if (!data.name || !data.age || !data.usersname || !data.password || !data.status || !data.role) return toast.error('Feild/s are empty')
+
+
+            // const result = await api.post('http://localhost:4000/register', payload, {
+            const result = await api.post('/register', payload, {
+                headers: { 'Content-Type': 'application/json' }
+            })
+
+            console.log(result.data.message, result.status)
+            reloade()
+
+        } catch (error) {
+
+            if (error.status == 400) {
+                console.log(error.response.data.message)
+                toast.error(error.response.data.message)
+            }
+            else if (error.status == 401) {
+                console.log('Error: ', error.response.data?.message || 'Fields Should not be empty')
+                console.log('Status:', error.response.status)
+            } else {
+                console.log(`Network error in register.jsx: ${error}` || 'something went rong')
+            }
+        }
+    }
+
+    if (par == 'add') {
+        handelClick = registerFn
+    } else {
+        handelClick = updateUserFn
+
+    }
+
     return (
         <>
-            <MainCard className="mb-0" >
+            <MainCard className="mb-0">
                 <Form noValidate>
-
+                    <div>Check: {par}</div>
                     {/* { name, age(number), usersname, password, status(boolean), role[admin or user] }  */}
 
                     {/* name */}
@@ -120,7 +175,7 @@ export function EditUserDetails({ _id ,reloade}) {
                             onChange={(e) =>
                                 setData((prev) => ({
                                     ...prev,
-                                    status: e.target.value === "true" // convert string -> boolean
+                                    status: e.target.value
                                 }))
                             }
                         >
@@ -149,7 +204,7 @@ export function EditUserDetails({ _id ,reloade}) {
                         </Form.Select>
                     </Form.Group>
 
-                    <button className="w-100 btn btn-primary" onClick={updateUserFn}>Update UsersData</button>
+                    <button className="w-100 btn btn-primary" onClick={handelClick}>Submit</button>
 
                     {/* <button className="w-100 btn btn-primary" onClick={(e) => {
                         updateUserFn(e)
