@@ -12,22 +12,37 @@ import { Button } from 'react-bootstrap';
 import api from './axiosIntercepter.js';
 import { EditUserDetails } from './EditUserDetails.jsx';
 import { toast } from "react-toastify";
+// import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
     const [popupstate, setPopupstate] = useState(false)
     const [popupstate2, setPopupstate2] = useState(false)
     const [selectedUserId, setSelectedUserId] = useState(null)
+    // Info
+    // skip = startingIndex
+    // limit = how many documents you want
+
+    const [pagination, setPagination] = useState({
+        skip: 0,
+        limit: 0
+    })
 
     const navigate = useNavigate()
     const { tokens, setTokens, theam, setTheam } = useContext(StateContext)
+
+    useEffect(() => {
+        getUsersFn();
+    }, [pagination]);
 
     useEffect(() => {
         getUsersFn()
     }, [])
 
     const getUsersFn = async () => {
-        const result = await axiosInstance.get('/getuser', {})
+        const result = await axiosInstance.get(`/getuser?skip=${pagination.skip}&limit=${pagination.limit}`, {})
         setUsersData(result.data.data)
         console.log('all values', result.data);
     }
@@ -52,6 +67,34 @@ export function AllUsers() {
                 <span className='Add-Feth-cont' id='toggle-btn'>
                     <div className='flex-between'>
                         <span><b>Users Data</b> </span>
+                        <ButtonToolbar aria-label="Toolbar with button groups">
+                            <ButtonGroup className="me-2" aria-label="First group">
+                                <Button onClick={() => {
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        skip: 0,
+                                        limit: 3
+                                    }))
+                                    // getUsersFn()
+                                }}>1-3</Button>
+                                <Button onClick={() => {
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        skip: 3,
+                                        limit: 3
+                                    }))
+                                    // getUsersFn()
+                                }}>3-6</Button>
+                                <Button onClick={() => {
+                                    setPagination((prev) => ({
+                                        ...prev,
+                                        skip: 0,
+                                        limit: 0
+                                    }))
+                                    // getUsersFn()
+                                }}>All</Button>
+                            </ButtonGroup>
+                        </ButtonToolbar>
                         <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             setPopupstate(prev => !prev);
                         }}>Add User</button>
@@ -128,20 +171,20 @@ export function AllUsers() {
                         ))}
                     </tbody>
                 </Table>
-                        {selectedUserId && (
-                            <div className="popup-cont">
-                                <div className='heading-popup'>
-                                    <h5 className='' >Edit User</h5>
-                                    {/* <input type="button" className='btn-user' id='close' */}
-                                    <Button variant="outline-danger" onClick={() => {
-                                        setSelectedUserId(null)
-                                    }}>x</Button>
-                                </div>
+                {selectedUserId && (
+                    <div className="popup-cont">
+                        <div className='heading-popup'>
+                            <h5 className='' >Edit User</h5>
+                            {/* <input type="button" className='btn-user' id='close' */}
+                            <Button variant="outline-danger" onClick={() => {
+                                setSelectedUserId(null)
+                            }}>x</Button>
+                        </div>
 
-                                {console.log('passed-------------------------: ', selectedUserId)}
-                                <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
-                            </div>
-                        )}
+                        {console.log('passed-------------------------: ', selectedUserId)}
+                        <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
+                    </div>
+                )}
             </MainCard>
 
 
