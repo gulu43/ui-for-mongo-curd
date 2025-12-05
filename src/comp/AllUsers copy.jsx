@@ -15,16 +15,15 @@ import { toast } from "react-toastify";
 // import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import Pagination from 'react-bootstrap/Pagination';
+import PageItem from 'react-bootstrap/PageItem'
 
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-
-export function AllUsers() {
+export function AllUsers_() {
     const [usersData, setUsersData] = useState([])
     const [popupstate, setPopupstate] = useState(false)
     const [popupstate2, setPopupstate2] = useState(false)
     const [selectedUserId, setSelectedUserId] = useState(null)
+    const [page, setPage] = useState(1)
 
     // Info
     // skip = startingIndex
@@ -65,39 +64,6 @@ export function AllUsers() {
         }
 
     }
-    // buttons
-    const editBodyTemplate = (rowData) => {
-        return (
-            <Button
-                variant="warning"
-                size="sm"
-                onClick={() => {
-                    // setSelectedUserId(rowData._id);
-                    console.log('click value of :',selectedUserId);
-                    (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
-                }}
-                // onToggle={}
-            >
-                Edit
-            </Button>
-        );
-    };
-
-    const deleteBodyTemplate = (rowData) => {
-        return (
-            <Button
-                variant="danger"
-                size="sm"
-                onClick={() => deleteUserFn(rowData._id)}
-            >
-                Delete
-            </Button>
-        );
-    };
-    useEffect(() => {
-        getUsersFn()
-    }, [])
-
     return (
         <>
             <MainCard >
@@ -105,8 +71,7 @@ export function AllUsers() {
                 <span className='Add-Feth-cont' id='toggle-btn'>
                     <div className='flex-between'>
                         <span><b>Users Data</b> </span>
-
-                        {/* <div id='pagination'>
+                        <div id='pagination'>
                             <ButtonToolbar aria-label="Toolbar with button groups">
                                 <ButtonGroup className="me-2" aria-label="First group">
                                     <Button onClick={() => {
@@ -135,12 +100,28 @@ export function AllUsers() {
                                     }}>All</Button>
                                 </ButtonGroup>
                             </ButtonToolbar>
-                        </div> */}
 
+                            <Pagination className='sm'>
+                                {/* <Pagination.First /> */}
+                                <Pagination.Prev />
+                                <Pagination.Item>{1}</Pagination.Item>
+                                <Pagination.Ellipsis />
+                                
+                                <Pagination.Item>{3}</Pagination.Item>
+                                <Pagination.Item active>{4}</Pagination.Item>
+                                <Pagination.Item>{5}</Pagination.Item>
+
+                                <Pagination.Ellipsis />
+                                <Pagination.Item>{10}</Pagination.Item>
+                                <Pagination.Next />
+                                {/* <Pagination.Last /> */}
+                            </Pagination>
+                        </div>
                         <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             setPopupstate(prev => !prev);
                         }}>Add User</button>
                     </div>
+
 
                     {popupstate && (
                         <div className="popup-cont">
@@ -162,23 +143,55 @@ export function AllUsers() {
 
                 </span>
 
-                {/* <div className=""> */}
-                    <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem', width: '100%' }}>
-                        <Column field="_id" header="id" style={{ width: 'auto' }}></Column>
-                        <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
-                        <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
-                        <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>
-                        <Column field="password" header="Password" style={{ width: 'auto' }}></Column>
-                        <Column field="status" header="Status" style={{ width: 'auto' }}></Column>
-                        <Column field="role" header="Role" style={{ width: 'auto' }}></Column>
-                        <Column field="createdAt" header="CreatedAt" style={{ width: 'auto' }}></Column>
-                        <Column field="updatedAt" header="UpdatedAt" style={{ width: 'auto' }}></Column>
-                        <Column field="__V" header="Version" style={{ width: 'auto' }}></Column>
+                <Table responsive striped hover className="mb-0 table-striped" style={{ overflowX: 'scroll' }}>
 
-                        <Column header="Edit" body={editBodyTemplate} style={{ textAlign: "center" }} />
-                        <Column header="Delete" body={deleteBodyTemplate} style={{ textAlign: "center" }} />
-                    </DataTable>
-                {/* </div> */}
+                    {/* <tbody style={{overflowX: 'scroll', marginLeft: '22%'}}> */}
+                    <tbody style={{ width: '100%' }} >
+                        <tr>
+                            <th>id</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Usersname</th>
+                            <th>Password</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>CreatedAt</th>
+                            <th>UpdatedAt</th>
+                            <th>Version</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        {usersData.map((row) => (
+                            <tr key={row._id}>
+                                <td>{row._id}</td>
+                                <td>{row.name}</td>
+                                <td>{row.age}</td>
+                                <td>{row.usersname}</td>
+                                <td>{row.password}</td>
+                                <td>{row.status ? 'Active' : 'Inactive'}</td>
+                                <td>{row.role}</td>
+                                <td>{row.createdAt}</td>
+                                <td>{row.updatedAt}</td>
+                                <td>{row.__v}</td>
+                                <td>
+                                    <button className='btn btn-warning btn-sm' onClick={() => {
+                                        // setSelectedUserId(row._id)
+                                        (!selectedUserId) ? setSelectedUserId(row._id) : setSelectedUserId(null)
+                                        // setPopupstate2(prev => !prev)
+
+                                    }}>Edit</button>
+
+                                </td>
+                                <td>
+                                    <button className='btn btn-danger btn-sm' onClick={() => {
+                                        // console.log(row._id);
+                                        deleteUserFn(row._id)
+                                    }}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
                 {selectedUserId && (
                     <div className="popup-cont">
                         <div className='heading-popup'>
@@ -193,9 +206,6 @@ export function AllUsers() {
                         <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
                     </div>
                 )}
-
-
-
             </MainCard>
 
 

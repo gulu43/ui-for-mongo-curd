@@ -16,6 +16,7 @@
     "dotenv": "^17.2.3",
     "formik": "^2.4.9",
     "mongoose": "^8.19.3",
+    "primereact": "^10.9.7",
     "prop-types": "^15.8.1",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
