@@ -17,8 +17,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
 import "primereact/resources/themes/lara-light-indigo/theme.css";
+import { Paginator } from 'primereact/paginator';
+
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
@@ -73,10 +74,15 @@ export function AllUsers() {
                 size="sm"
                 onClick={() => {
                     // setSelectedUserId(rowData._id);
-                    console.log('click value of :',selectedUserId);
-                    (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
+
+                    // console.log('click value of :');
+                    // (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
+                    setSelectedUserId((prev) =>
+                        prev === rowData._id ? null : rowData._id
+                    );
+
                 }}
-                // onToggle={}
+            // onToggle={}
             >
                 Edit
             </Button>
@@ -163,21 +169,22 @@ export function AllUsers() {
                 </span>
 
                 {/* <div className=""> */}
-                    <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem', width: '100%' }}>
-                        <Column field="_id" header="id" style={{ width: 'auto' }}></Column>
-                        <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
-                        <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
-                        <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>
-                        <Column field="password" header="Password" style={{ width: 'auto' }}></Column>
-                        <Column field="status" header="Status" style={{ width: 'auto' }}></Column>
-                        <Column field="role" header="Role" style={{ width: 'auto' }}></Column>
-                        <Column field="createdAt" header="CreatedAt" style={{ width: 'auto' }}></Column>
-                        <Column field="updatedAt" header="UpdatedAt" style={{ width: 'auto' }}></Column>
-                        <Column field="__V" header="Version" style={{ width: 'auto' }}></Column>
+                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem', width: '100%' }}>
+                    <Column field="_id" header="id" style={{ width: 'auto' }}></Column>
+                    <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
+                    <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
+                    <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>
+                    <Column field="password" header="Password" style={{ width: 'auto' }}></Column>
+                    <Column field="status" header="Status" style={{ width: 'auto' }}></Column>
+                    {/* <Column field="status === true ? Active : Inactive" header="Status" style={{ width: 'auto' }}></Column> */}
+                    <Column field="role" header="Role" style={{ width: 'auto' }}></Column>
+                    <Column field="createdAt" header="CreatedAt" style={{ width: 'auto' }}></Column>
+                    <Column field="updatedAt" header="UpdatedAt" style={{ width: 'auto' }}></Column>
+                    <Column field="__v" header="Version" style={{ width: 'auto' }}></Column>
 
-                        <Column header="Edit" body={editBodyTemplate} style={{ textAlign: "center" }} />
-                        <Column header="Delete" body={deleteBodyTemplate} style={{ textAlign: "center" }} />
-                    </DataTable>
+                    <Column header="Edit" body={editBodyTemplate} style={{ textAlign: "center" }} />
+                    <Column header="Delete" body={deleteBodyTemplate} style={{ textAlign: "center" }} />
+                </DataTable>
                 {/* </div> */}
                 {selectedUserId && (
                     <div className="popup-cont">
@@ -189,8 +196,8 @@ export function AllUsers() {
                             }}>x</Button>
                         </div>
 
-                        {console.log('passed-------------------------: ', selectedUserId)}
-                        <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
+                        {/* {console.log('passed-------------------------: ', selectedUserId)} */}
+                        <EditUserDetails key={selectedUserId} _id={selectedUserId} reloade={getUsersFn} par={'edit'} />
                     </div>
                 )}
 
