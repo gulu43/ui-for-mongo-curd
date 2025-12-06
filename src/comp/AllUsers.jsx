@@ -18,7 +18,6 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-import { Paginator } from 'primereact/paginator';
 
 
 export function AllUsers() {
@@ -100,6 +99,19 @@ export function AllUsers() {
             </Button>
         );
     };
+    const statusBodyTemplate = (rowData) => {
+        return rowData.status === true ? "Active" : "Inactive";
+    };
+    const dateDDMMYY = (rowData) => {
+
+        let oldFormat = rowData?.createdAt || '0000-00-00T'
+        let dateOnly = oldFormat.split("T")[0]
+        let [year, month, day] = dateOnly.split("-")
+        let newFormat = `${day}/${month}/${year}`
+        return newFormat
+    };
+
+
     useEffect(() => {
         getUsersFn()
     }, [])
@@ -111,37 +123,6 @@ export function AllUsers() {
                 <span className='Add-Feth-cont' id='toggle-btn'>
                     <div className='flex-between'>
                         <span><b>Users Data</b> </span>
-
-                        {/* <div id='pagination'>
-                            <ButtonToolbar aria-label="Toolbar with button groups">
-                                <ButtonGroup className="me-2" aria-label="First group">
-                                    <Button onClick={() => {
-                                        setPagination((prev) => ({
-                                            ...prev,
-                                            skip: 0,
-                                            limit: 3
-                                        }))
-                                        // getUsersFn()
-                                    }}>1-3</Button>
-                                    <Button onClick={() => {
-                                        setPagination((prev) => ({
-                                            ...prev,
-                                            skip: 3,
-                                            limit: 3
-                                        }))
-                                        // getUsersFn()
-                                    }}>3-6</Button>
-                                    <Button onClick={() => {
-                                        setPagination((prev) => ({
-                                            ...prev,
-                                            skip: 0,
-                                            limit: 0
-                                        }))
-                                        // getUsersFn()
-                                    }}>All</Button>
-                                </ButtonGroup>
-                            </ButtonToolbar>
-                        </div> */}
 
                         <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             setPopupstate(prev => !prev);
@@ -169,22 +150,25 @@ export function AllUsers() {
                 </span>
 
                 {/* <div className=""> */}
-                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem', width: '100%' }}>
+                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+
+                    paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                    className="custom-paginator-table"
+
+                    tableStyle={{ minWidth: '50rem', width: '100%' }}
+
+                >
                     <Column field="_id" header="id" style={{ width: 'auto' }}></Column>
                     <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
                     <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
                     <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>
-                    <Column field="password" header="Password" style={{ width: 'auto' }}></Column>
-                    <Column field="status" header="Status" style={{ width: 'auto' }}></Column>
-                    {/* <Column field="status === true ? Active : Inactive" header="Status" style={{ width: 'auto' }}></Column> */}
+                    <Column header="Status" body={statusBodyTemplate} style={{ width: 'auto' }}></Column>
                     <Column field="role" header="Role" style={{ width: 'auto' }}></Column>
-                    <Column field="createdAt" header="CreatedAt" style={{ width: 'auto' }}></Column>
-                    <Column field="updatedAt" header="UpdatedAt" style={{ width: 'auto' }}></Column>
-                    <Column field="__v" header="Version" style={{ width: 'auto' }}></Column>
-
+                    <Column header="CreatedAt" body={dateDDMMYY} style={{ width: 'auto' }}></Column>
                     <Column header="Edit" body={editBodyTemplate} style={{ textAlign: "center" }} />
                     <Column header="Delete" body={deleteBodyTemplate} style={{ textAlign: "center" }} />
                 </DataTable>
+
                 {/* </div> */}
                 {selectedUserId && (
                     <div className="popup-cont">
