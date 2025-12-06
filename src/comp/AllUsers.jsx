@@ -18,6 +18,9 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
+import { FilterMatchMode } from 'primereact/api';
+import { InputText } from 'primereact/inputtext';
+import { Button as ButtonPR } from 'primereact/button';
 
 
 export function AllUsers() {
@@ -65,6 +68,52 @@ export function AllUsers() {
         }
 
     }
+    // filtters thing
+    // 1. State for the ACTUAL filter applied to the table
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
+
+    // 2. State for the TEMPORARY input text (what the user sees while typing)
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+    // 3. Function to trigger the filter ONLY when button is clicked
+    const onGlobalSearch = () => {
+        const _filters = { ...filters };
+        _filters['global'].value = globalFilterValue; // Copy input text to filter state
+        setFilters(_filters);
+    };
+
+    const onInputChange = (e) => {
+        const value = e.target.value;
+
+        setGlobalFilterValue(value);
+
+        const _filters = { ...filters };
+        _filters['global'].value = value;
+        setFilters(_filters);
+    };
+
+    const renderHeader = () => {
+        return (
+            <div className="flex justify-content-end align-items-center gap-2">
+                {/* Input updates local state only */}
+                <InputText
+                    value={globalFilterValue}
+                    onChange={onInputChange}
+                    // onChange={(e) => setGlobalFilterValue(e.target.value)}
+                    placeholder="Search"
+                // Optional: Allow pressing 'Enter' to search
+                // onKeyDown={(e) => e.key === 'Enter' && onGlobalSearch()}
+                />
+                {/* Button triggers the actual filter update */}
+                {/* <ButtonPR onClick={onGlobalSearch} label="Submit" /> */}
+
+            </div>
+        );
+    };
+
+    const header = renderHeader();
     // buttons
     const editBodyTemplate = (rowData) => {
         return (
@@ -150,8 +199,12 @@ export function AllUsers() {
                 </span>
 
                 {/* <div className=""> */}
-                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
-
+                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
+                    scrollable scrollHeight="65vh"
+                    header={header}
+                    filters={filters}
+                    globalFilterFields={['_id', 'age', 'name', 'usersname']}
+                    emptyMessage="No user found."
                     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                     className="custom-paginator-table"
 
