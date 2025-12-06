@@ -223,7 +223,7 @@ export function AllUsers() {
                     tableStyle={{ minWidth: '50rem', width: '100%' }}
 
                 >
-                    <Column field="_id" header="id" style={{ width: 'auto' }}></Column>
+                    <Column field="userId" header="Sl.no." style={{ width: 'auto' }}></Column>
                     <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
                     <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
                     <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>
