@@ -21,13 +21,15 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { FilterMatchMode } from 'primereact/api';
 import { InputText } from 'primereact/inputtext';
 import { Button as ButtonPR } from 'primereact/button';
+import { Sidebar } from 'primereact/sidebar';
 
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
     const [popupstate, setPopupstate] = useState(false)
-    const [popupstate2, setPopupstate2] = useState(false)
+    const [option, setOption] = useState('')
     const [selectedUserId, setSelectedUserId] = useState(null)
+    const [visibleRight, setVisibleRight] = useState(false);
 
     // Info
     // skip = startingIndex
@@ -121,13 +123,16 @@ export function AllUsers() {
                 variant="warning"
                 size="sm"
                 onClick={() => {
-                    // setSelectedUserId(rowData._id);
+                    setSelectedUserId(rowData._id);
 
                     // console.log('click value of :');
                     // (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
-                    setSelectedUserId((prev) =>
-                        prev === rowData._id ? null : rowData._id
-                    );
+                    // setSelectedUserId((prev) =>
+                    //     prev === rowData._id ? null : rowData._id
+                    // );
+
+                    setVisibleRight(prev => !prev)
+                    setOption('edit')
 
                 }}
             // onToggle={}
@@ -148,9 +153,11 @@ export function AllUsers() {
             </Button>
         );
     };
+
     const statusBodyTemplate = (rowData) => {
         return rowData.status === true ? "Active" : "Inactive";
     };
+
     const dateDDMMYY = (rowData) => {
 
         let oldFormat = rowData?.createdAt || '0000-00-00T'
@@ -167,6 +174,10 @@ export function AllUsers() {
 
     return (
         <>
+
+            <Sidebar visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
+                {option === 'add' ? <EditUserDetails _id={{}} reloade={getUsersFn} par={'add'} /> : <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />}
+            </Sidebar>
             <MainCard >
 
                 <span className='Add-Feth-cont' id='toggle-btn'>
@@ -174,7 +185,10 @@ export function AllUsers() {
                         <span><b>Users Data</b> </span>
 
                         <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
-                            setPopupstate(prev => !prev);
+                            // setPopupstate(prev => !prev);
+                            setVisibleRight(prev => !prev)
+                            setOption('add')
+
                         }}>Add User</button>
                     </div>
 
@@ -184,10 +198,8 @@ export function AllUsers() {
                                 <h5 className='' >Add User</h5>
                                 {/* <input type="button" className='btn-user' id='close' */}
                                 <Button variant="outline-danger" onClick={() => {
-
                                     setPopupstate(prev => !prev);
                                 }}>x</Button>
-
 
                             </div>
                             {/* <Register popupMode={true} /> */}
@@ -223,7 +235,8 @@ export function AllUsers() {
                 </DataTable>
 
                 {/* </div> */}
-                {selectedUserId && (
+                {/* {selectedUserId && ( */}
+                {false && (
                     <div className="popup-cont">
                         <div className='heading-popup'>
                             <h5 className='' >Edit User</h5>

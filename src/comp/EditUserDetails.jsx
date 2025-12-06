@@ -71,6 +71,10 @@ export function EditUserDetails({ _id, reloade, par }) {
             })
 
             console.log(result.data.message, result.status)
+            if (result.status == 201) {
+                // console.log(result.data.message);
+                toast.success(`User added`)
+            }
             reloade()
 
         } catch (error) {
