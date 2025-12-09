@@ -9,8 +9,11 @@ import Image from 'react-bootstrap/Image';
 // import 
 import '../index.scss'
 
-export function EditUserDetails({ _id, reloade, par }) {
+export function EditUserDetails({ _id, reloade, par, editingRowData }) {
 
+    useEffect(() => {
+        console.log("editingRowData --------------------------", editingRowData.name)
+    }, [])
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => {
         setShowPassword((prevState) => !prevState);
@@ -25,12 +28,13 @@ export function EditUserDetails({ _id, reloade, par }) {
 
     const [data, setData] = useState({
         _id: userId,
-        name: '',
-        age: '',
-        usersname: '',
+        name: editingRowData?.name || '',
+        age: editingRowData?.age || '',
+        usersname: editingRowData?.usersname || '',
         password: '',
-        status: '',
-        role: ''
+        // password: editingRowData?.password || '',
+        status: editingRowData?.status || '',
+        role: editingRowData?.role || ''
     })
 
     useEffect(() => {
@@ -120,6 +124,7 @@ export function EditUserDetails({ _id, reloade, par }) {
                             type="text"
                             name="name"
                             value={data.name || ""}
+                            // value={editingRowData.name || ""}
                             onChange={(e) =>
                                 setData((prev) => ({
                                     ...prev,

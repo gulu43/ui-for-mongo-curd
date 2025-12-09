@@ -22,6 +22,8 @@ import { FilterMatchMode } from 'primereact/api';
 import { InputText } from 'primereact/inputtext';
 import { Button as ButtonPR } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
+import { ConfirmDialog } from 'primereact/confirmdialog'; // For <ConfirmDialog /> component
+import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
 
 
 export function AllUsers() {
@@ -30,6 +32,8 @@ export function AllUsers() {
     const [option, setOption] = useState('')
     const [selectedUserId, setSelectedUserId] = useState(null)
     const [visibleRight, setVisibleRight] = useState(false);
+    const [currentEditData, setCurrentEditData] = useState('');
+    const [loading, setLoading]= useState(false);
 
     // Info
     // skip = startingIndex
@@ -54,18 +58,21 @@ export function AllUsers() {
     const getUsersFn = async () => {
         const result = await axiosInstance.get(`/getuser?skip=${pagination.skip}&limit=${pagination.limit}`, {})
         setUsersData(result.data.data)
-        console.log('all values', result.data);
+        // console.log('all values', result.data);
     }
 
     const deleteUserFn = async (id) => {
+        setLoading(true)
         const response = await api.delete('/deleteaccount', {
             data: { userId: id }
         })
         console.log(response);
         if (response.status == 200) {
             toast.success(response.data.message)
+            setLoading(false)
             getUsersFn()
         } else {
+            setLoading(false)
             toast.error(response?.data?.message || "Something went wrong")
         }
 
@@ -118,41 +125,66 @@ export function AllUsers() {
     const header = renderHeader();
     // buttons
     const editBodyTemplate = (rowData) => {
+
         return (
             <Button
                 variant="warning"
                 size="sm"
                 onClick={() => {
                     setSelectedUserId(rowData._id);
+                    setCurrentEditData(rowData)
 
                     // console.log('click value of :');
                     // (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
                     // setSelectedUserId((prev) =>
                     //     prev === rowData._id ? null : rowData._id
                     // );
-
                     setVisibleRight(prev => !prev)
                     setOption('edit')
 
                 }}
-            // onToggle={}
             >
                 Edit
             </Button>
         );
     };
 
+    const accept = (id) => {
+        // toast.success('You have accepted');
+        deleteUserFn(id)
+    }
+
+    const reject = () => {
+        toast.error('You have rejected');
+    }
+
+    const confirmDelete = (id) => {
+        confirmDialog({
+            message: 'Do you want to delete this user?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            defaultFocus: 'reject',
+            acceptClassName: 'p-button-danger',
+            accept: () => accept(id),
+            reject
+        });
+    };
+
     const deleteBodyTemplate = (rowData) => {
+
         return (
             <Button
                 variant="danger"
                 size="sm"
-                onClick={() => deleteUserFn(rowData._id)}
+                // onClick={() => deleteUserFn(rowData._id)}
+                onClick={() => confirmDelete(rowData._id)}
             >
                 Delete
             </Button>
         );
     };
+
+
 
     const headerForDrawer = (op) => {
         return (
@@ -181,9 +213,9 @@ export function AllUsers() {
 
     return (
         <>
-
-            <Sidebar header={headerForDrawer(option)}  visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
-                {option === 'add' ? <EditUserDetails _id={{}} reloade={getUsersFn} par={'add'} /> : <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />}
+            <ConfirmDialog />
+            <Sidebar header={headerForDrawer(option)} visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
+                {option === 'add' ? <EditUserDetails _id={{}} reloade={getUsersFn} par={'add'} editingRowData={{}} /> : <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} editingRowData={currentEditData} />}
             </Sidebar>
 
             <MainCard >
@@ -219,7 +251,7 @@ export function AllUsers() {
                 </span>
 
                 {/* <div className=""> */}
-                <DataTable value={usersData} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
+                <DataTable value={usersData} loading={loading} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
                     scrollable scrollHeight="65vh"
                     header={header}
                     filters={filters}
