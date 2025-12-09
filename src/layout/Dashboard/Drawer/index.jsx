@@ -70,12 +70,12 @@ export default function MainDrawer() {
               </Link>
             </li>
 
-            <li className="pc-item">
+            {/* <li className="pc-item">
               <Link className="pc-link" to="/updatepassword">
                 <span className="pc-micon"><i className="ph-duotone ph-chart-bar"></i></span>
                 UpdatePassword
               </Link>
-            </li>
+            </li> */}
 
             {/* ---------- Pages Heading ----------
             <li className="pc-item pc-caption">
@@ -85,7 +85,7 @@ export default function MainDrawer() {
             <li className="pc-item">
               <Link className="pc-link" to="/getuser">
                 <span className="pc-micon"><i className="ph-duotone ph-users"></i></span>
-                get Users
+                Users
               </Link>
             </li>
 
@@ -101,14 +101,14 @@ export default function MainDrawer() {
                 <span className="pc-micon"><i className="ph-duotone ph-user-circle"></i></span>
                 Profile
               </Link>
-            </li> */}
+            </li> */} 
 
-            <li className="pc-item">
+            {/* <li className="pc-item">
               <Link className="pc-link" to="/logout">
                 <span className="pc-micon"><i className="ph-duotone ph-sign-out"></i></span>
                 Logout
               </Link>
-            </li>
+            </li> */}
 
           </ul>
         </div>

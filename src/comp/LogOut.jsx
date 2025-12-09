@@ -29,8 +29,12 @@ export function LogOut() {
         // <input type="button" variant="danger" onClick={(e) => {
         //     logout(e)
         // }} value="Logout btn from LogoutComponent" />
-        <Button variant="danger" onClick={(e) => {
-            logout(e)
-        }} >Logout</Button>
+        <Button
+            onClick={(e) => {
+                logout(e)
+            }} >
+            <i className="ph ph-sign-out align-middle me-2" />
+            Logout
+        </Button>
     );
 }

@@ -154,6 +154,14 @@ export function AllUsers() {
         );
     };
 
+    const headerForDrawer = (op) => {
+        return (
+            <div className="heading-popup">
+                <div className='heading-txt'>{op === 'add' ? "Add User" : "Edit User"}</div>
+            </div>
+        );
+    }
+
     const statusBodyTemplate = (rowData) => {
         return rowData.status === true ? "Active" : "Inactive";
     };
@@ -167,7 +175,6 @@ export function AllUsers() {
         return newFormat
     };
 
-
     useEffect(() => {
         getUsersFn()
     }, [])
@@ -175,9 +182,10 @@ export function AllUsers() {
     return (
         <>
 
-            <Sidebar visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
+            <Sidebar header={headerForDrawer(option)}  visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
                 {option === 'add' ? <EditUserDetails _id={{}} reloade={getUsersFn} par={'add'} /> : <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} />}
             </Sidebar>
+
             <MainCard >
 
                 <span className='Add-Feth-cont' id='toggle-btn'>
@@ -223,7 +231,8 @@ export function AllUsers() {
                     tableStyle={{ minWidth: '50rem', width: '100%' }}
 
                 >
-                    <Column field="userId" header="Sl.no." style={{ width: 'auto' }}></Column>
+                    {/* <Column field="userId" header="Sl.no." style={{ width: 'auto' }}></Column> */}
+                    <Column header="SL No" body={(rowData, options) => options.rowIndex + 1} />
                     <Column field="name" header="Name" style={{ width: 'auto' }}></Column>
                     <Column field="age" header="Age" style={{ width: 'auto' }}></Column>
                     <Column field="usersname" header="Usersname" style={{ width: 'auto' }}></Column>

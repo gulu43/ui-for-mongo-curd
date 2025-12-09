@@ -21,6 +21,7 @@ import { emailSchema, passwordSchema } from '../utils/validationSchema.js';
 
 // assets
 import DarkLogo from '../assets/images/logo-dark.svg';
+import { toast } from 'react-toastify';
 
 function Login({ className = '', link }) {
 
@@ -87,6 +88,7 @@ function Login({ className = '', link }) {
       // console.log(result.data.message, result.status)
       if (result.status == 200) {
         console.log(result.data.message)
+        toast.success(result.data.message)
         sessionStorage.setItem('accessToken', result.data.accessToken)
         localStorage.setItem('refreshToken', result.data.refreshToken)
 
@@ -108,32 +110,38 @@ function Login({ className = '', link }) {
         // USER NOT ACTIVE
         if (error.response.status === 422) {
           console.log('you are not active: ', error.response.data.message)
+          toast.error('you are not active: ', error.response.data.message)
         }
 
         // WRONG PASSWORD
         else if (error.response.status === 401) {
           console.log(' Password or username is wrong')
+          toast.error(' Password or username is wrong')
         }
 
         // USER NOT FOUND
         else if (error.response.status === 404) {
           console.log('user not found: ', error.response.data.message)
+          toast.error('user not found: ', error.response.data.message)
         }
 
         // EMPTY FIELDS ERROR
         else if (error.response.status === 400) {
           console.log('empty feils: ', error.response.data.message)
+          toast.error('empty feils: ', error.response.data.message)
         }
 
         // ANY OTHER SERVER ERROR
         else {
           console.log('Server error: ', error.response.data.message)
+          toast.error('Server error: ', error.response.data.message)
         }
       }
 
       //  NETWORK OR AXIOS ERROR (server off, CORS, connection lost)
       else {
         console.log('Network Error in Login.jsx: ', error)
+        toast.error('Server error: ', error.response.data.message)
       }
     }
   }

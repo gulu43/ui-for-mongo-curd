@@ -20,6 +20,7 @@ import Img2 from '../../assets/images/user/avatar-1.png';
 import Img3 from '../../assets/images/user/avatar-3.png';
 import Img4 from '../../assets/images/user/avatar-4.png';
 import Img5 from '../../assets/images/user/avatar-5.png';
+import { LogOut } from '../../comp/LogOut.jsx';
 
 const notifications = [
   {
@@ -180,8 +181,8 @@ export default function Header() {
                       <Image src={Img2} alt="user-avatar" className="user-avatar wid-35" roundedCircle />
                     </div>
                     <Stack gap={1}>
-                      <h6 className="text-white mb-0">{'User name'}</h6>
-                      <span className="text-white text-opacity-75">{'companey_name@company.xyz'}</span>
+                      <h6 className="text-white mb-0">:{'User name'}</h6>
+                      <span className="text-white text-opacity-75">Role{''}</span>
                     </Stack>
                   </Stack>
                 </Dropdown.Header>
@@ -196,15 +197,20 @@ export default function Header() {
                       <i className="ph ph-share-network me-2" />
                       Share
                     </Dropdown.Item> */}
-                    <Dropdown.Item as={Link} to="#" className="justify-content-start">
-                      <i className="ph ph-lock-key me-2" />
-                      Change Password
-                    </Dropdown.Item>
+                      <Dropdown.Item as={Link} to="#" className="justify-content-start">
+                    <Link className="pc-link" to="/updatepassword">
+                    
+                        <i className="ph ph-lock-key me-2" />Change Password
+                    </Link>
+                      </Dropdown.Item>
+
                     <div className="d-grid my-2">
-                      <Button>
+
+                      <LogOut />
+                      {/* <Button>
                         <i className="ph ph-sign-out align-middle me-2" />
                         Logout
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </div>

@@ -42,10 +42,10 @@ export function Home() {
         <>
             <h2>Home</h2>
             
-            <LogOut />
+            {/* <LogOut />
             <input type="button" className="btn btn-primary" onClick={(e) => {
                 checkUsersFn(e)
-            }} value="Submit" />
+            }} value="Submit" /> */}
 
         </>
     );

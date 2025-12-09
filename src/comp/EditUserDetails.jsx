@@ -3,12 +3,19 @@ import MainCard from '../components/MainCard';
 import Form from 'react-bootstrap/Form';
 import api from './axiosIntercepter';
 import { toast } from "react-toastify";
+import { Button, InputGroup } from 'react-bootstrap';
+import Image from 'react-bootstrap/Image';
 
 // import 
 import '../index.scss'
 
-
 export function EditUserDetails({ _id, reloade, par }) {
+
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevState) => !prevState);
+    };
+
     let handelClick;
 
     const [userId] = useState(_id);
@@ -103,7 +110,7 @@ export function EditUserDetails({ _id, reloade, par }) {
         <>
             <MainCard className="mb-0">
                 <Form noValidate>
-                    <div>Check: {par}</div>
+                    {/* <div>Check: {par}</div> */}
                     {/* { name, age(number), usersname, password, status(boolean), role[admin or user] }  */}
 
                     {/* name */}
@@ -157,17 +164,22 @@ export function EditUserDetails({ _id, reloade, par }) {
                     {/* password */}
                     <Form.Group className="mb-3" controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            name="password"
-                            value={data.password || ""}
-                            onChange={(e) =>
-                                setData((prev) => ({
-                                    ...prev,
-                                    password: e.target.value
-                                }))
-                            }
-                        />
+                        <InputGroup>
+                            <Form.Control
+                                type={showPassword ? 'text' : 'password'}
+                                name="password"
+                                value={data.password || ""}
+                                onChange={(e) =>
+                                    setData((prev) => ({
+                                        ...prev,
+                                        password: e.target.value
+                                    }))
+                                }
+                            />
+                            <Button onClick={togglePasswordVisibility}>
+                                {showPassword ? <i className="ti ti-eye" /> : <i className="ti ti-eye-off" />}
+                            </Button>
+                        </InputGroup>
                     </Form.Group>
 
                     {/* status (boolean) */}
@@ -208,7 +220,7 @@ export function EditUserDetails({ _id, reloade, par }) {
                         </Form.Select>
                     </Form.Group>
 
-                    <button className="w-100 btn btn-primary" onClick={handelClick}>Submit</button>
+                    <button className="w-100 btn btn-primary" style={{ fontSize: '110%' }} onClick={handelClick}>Save</button>
 
                     {/* <button className="w-100 btn btn-primary" onClick={(e) => {
                         updateUserFn(e)

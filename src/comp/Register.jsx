@@ -23,6 +23,7 @@ import MainCard from '../components/MainCard';
 
 // assets
 import DarkLogo from '../assets/images/logo-dark.svg';
+import { toast } from 'react-toastify';
 
 export function Register({ className = '', link = '' }) {
 
@@ -47,7 +48,7 @@ export function Register({ className = '', link = '' }) {
     const changeTheamFn = () => {
         theam == 'dark' ? setTheam('light') : setTheam('dark');
     }
-    
+
     function checkValidetion() {
         let InvalidFields = {}
         if (data.name == '') {
@@ -76,19 +77,26 @@ export function Register({ className = '', link = '' }) {
             })
 
             console.log(result.data.message, result.status)
-
+            toast.success(result.data.message, result.status)
+            
             navigate('/login')
             // }
         } catch (error) {
-
+            
             if (error.status == 400) {
                 console.log(error.response.data.message)
+                toast.success(error.response.data.message)
             }
             else if (error.status == 401) {
                 console.log('Error: ', error.response.data?.message || 'Fields Should not be empty')
+                toast.success('Error: ', error.response.data?.message || 'Fields Should not be empty')
+
                 console.log('Status:', error.response.status)
+                toast.success('Status:', error.response.status)
             } else {
                 console.log(`Network error in register.jsx: ${error}` || 'something went rong')
+                toast.error(`Network error in register.jsx: ${error}` || 'something went rong')
+
             }
         }
     }
@@ -109,8 +117,8 @@ export function Register({ className = '', link = '' }) {
         setShowPassword((prevState) => !prevState);
     };
 
-    const onSubmit = (data= 'ok') => {
-        console.log('register ok',data);
+    const onSubmit = (data = 'ok') => {
+        console.log('register ok', data);
 
     };
 
