@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Dialog } from 'primereact/dialog';
+
 
 // react-bootstrap
 import Button from 'react-bootstrap/Button';
@@ -13,6 +17,8 @@ import Stack from 'react-bootstrap/Stack';
 import MainCard from '../../components/MainCard.jsx';
 import SimpleBarScroll from '../../components/third-party/SimpleBar.jsx';
 import { handlerDrawerOpen, useGetMenuMaster } from '../../api/menu';
+import { useContext } from 'react';
+import { StateContext } from '../../comp/App.jsx';
 
 // assets
 import Img1 from '../../assets/images/user/avatar-2.png';
@@ -21,6 +27,7 @@ import Img3 from '../../assets/images/user/avatar-3.png';
 import Img4 from '../../assets/images/user/avatar-4.png';
 import Img5 from '../../assets/images/user/avatar-5.png';
 import { LogOut } from '../../comp/LogOut.jsx';
+import UpdatePassword from '../../comp/UpdatePassword.jsx';
 
 const notifications = [
   {
@@ -69,9 +76,12 @@ const notifications = [
 // =============================|| MAIN LAYOUT - HEADER ||============================== //
 
 export default function Header() {
+
+  const [visible, setVisible] = useState(false)
+
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster?.isDashboardDrawerOpened;
-
+  const navigate = useNavigate()
   return (
     <header className="pc-header">
       <div className="header-wrapper">
@@ -197,21 +207,26 @@ export default function Header() {
                       <i className="ph ph-share-network me-2" />
                       Share
                     </Dropdown.Item> */}
-                      <Dropdown.Item as={Link} to="#" className="justify-content-start">
-                    <Link className="pc-link" to="/updatepassword">
+                    <Dropdown.Item className="justify-content-start" onClick={() => {
+                      setVisible((prev) => !prev)
+                    }}>
+                      <i className="ph ph-lock-key me-2" />Change Password
+                    </Dropdown.Item>
                     
-                        <i className="ph ph-lock-key me-2" />Change Password
-                    </Link>
-                      </Dropdown.Item>
+                    <Dialog header="Header" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
+                      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+                      <UpdatePassword />
+                    </Dialog>
 
                     <div className="d-grid my-2">
-
                       <LogOut />
-                      {/* <Button>
+                    </div>
+
+                    {/* <Button>
                         <i className="ph ph-sign-out align-middle me-2" />
                         Logout
                       </Button> */}
-                    </div>
+
                   </div>
                 </div>
               </Dropdown.Menu>

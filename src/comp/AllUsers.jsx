@@ -33,7 +33,7 @@ export function AllUsers() {
     const [selectedUserId, setSelectedUserId] = useState(null)
     const [visibleRight, setVisibleRight] = useState(false);
     const [currentEditData, setCurrentEditData] = useState('');
-    const [loading, setLoading]= useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Info
     // skip = startingIndex
