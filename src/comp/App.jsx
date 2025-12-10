@@ -23,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import MainLayout from '../layout/Dashboard/index.jsx'
 import { EditUserDetails } from './EditUserDetails.jsx'
+import { NotFound } from './NotFound.jsx'
 
 export const StateContext = createContext()
 
@@ -111,12 +112,13 @@ function App() {
           <Route path='/login' element={tokens.accessToken ? <Navigate to="/home" /> : <LoginPage />} />
           <Route path='/register' element={tokens.accessToken ? <Navigate to="/home" /> : <RegisterPage />} />
           <Route path='/refresh' element={(!tokens.accessToken && tokens.refreshToken) ? <Refresh /> : <Navigate to='/login' />} />
-          <Route path='/home' element={<ProtectedRoutes>{<MainLayout page={<Home />} />}</ProtectedRoutes>} />
-          <Route path='/updatepassword' element={<ProtectedRoutes>{<MainLayout page={<UpdatePassword />} />}</ProtectedRoutes>} />
-          <Route path='/logout' element={<ProtectedRoutes>{<LogOut />}</ProtectedRoutes>} />
-          <Route path='/deleteaccount' element={<ProtectedRoutes>{<DelAc />}</ProtectedRoutes>} />
-          <Route path='/getuser' element={<ProtectedRoutes>{<MainLayout page={<AllUsers />} />}</ProtectedRoutes>} />
-          <Route path='*' element={<EditUserDetails />} />
+          <Route path='/home' element={<ProtectedRoutes requiredRole={['admin', 'user']}><MainLayout page={<Home />} /></ProtectedRoutes>} />
+          <Route path='/updatepassword' element={<ProtectedRoutes requiredRole={['admin', 'user']}>{<MainLayout page={<UpdatePassword />} />}</ProtectedRoutes>} />
+          <Route path='/logout' element={<ProtectedRoutes  requiredRole={['admin', 'user']}>{<LogOut />}</ProtectedRoutes>} />
+          <Route path='/deleteaccount' element={<ProtectedRoutes requiredRole={['admin']}>{<DelAc />}</ProtectedRoutes>} />
+          <Route path='/getuser' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<AllUsers />} />}</ProtectedRoutes>} />
+          <Route path='pagenotfound' element={<NotFound />} />
+          <Route path='*' element={<Navigate to={'/pagenotfound'} />} />
 
         </Routes>
       </StateContext.Provider>

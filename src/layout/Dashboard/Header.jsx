@@ -191,8 +191,8 @@ export default function Header() {
                       <Image src={Img2} alt="user-avatar" className="user-avatar wid-35" roundedCircle />
                     </div>
                     <Stack gap={1}>
-                      <h6 className="text-white mb-0">:{'User name'}</h6>
-                      <span className="text-white text-opacity-75">Role{''}</span>
+                      <h6 className="text-white mb-0">Usersname: {localStorage.getItem('usersname') || 'Guest'}</h6>
+                      <span className="text-white text-opacity-60">Role: {localStorage.getItem('role') || 'Guest'}</span>
                     </Stack>
                   </Stack>
                 </Dropdown.Header>
@@ -207,12 +207,12 @@ export default function Header() {
                       <i className="ph ph-share-network me-2" />
                       Share
                     </Dropdown.Item> */}
-                    <Dropdown.Item className="justify-content-start" onClick={() => {
+                    <Dropdown.Item className="justify-content-center" onClick={() => {
                       setVisible((prev) => !prev)
                     }}>
                       <i className="ph ph-lock-key me-2" />Change Password
                     </Dropdown.Item>
-                    
+
                     <Dialog header="Header" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
                       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                       <UpdatePassword />

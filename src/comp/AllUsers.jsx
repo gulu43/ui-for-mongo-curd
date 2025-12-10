@@ -24,7 +24,7 @@ import { Button as ButtonPR } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { ConfirmDialog } from 'primereact/confirmdialog'; // For <ConfirmDialog /> component
 import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
-
+// import api from './axiosIntercepter.js';
 
 export function AllUsers() {
     const [usersData, setUsersData] = useState([])
@@ -130,15 +130,12 @@ export function AllUsers() {
             <Button
                 variant="warning"
                 size="sm"
-                onClick={() => {
+                onClick={async () => {
                     setSelectedUserId(rowData._id);
-                    setCurrentEditData(rowData)
-
-                    // console.log('click value of :');
-                    // (!selectedUserId) ? setSelectedUserId(rowData._id) : setSelectedUserId(null)
-                    // setSelectedUserId((prev) =>
-                    //     prev === rowData._id ? null : rowData._id
-                    // );
+                    const result = await api.post('/getuserpost', { _id: rowData._id })
+                    // console.log(result.data.data);
+                    // setCurrentEditData(rowData)
+                    setCurrentEditData(result.data.data)
                     setVisibleRight(prev => !prev)
                     setOption('edit')
 

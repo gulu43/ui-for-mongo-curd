@@ -18,6 +18,7 @@ export default function MainDrawer() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster?.isDashboardDrawerOpened;
   const [selectedItems, setSelectedItems] = useState();
+  const [role, setRole] = useState(localStorage.getItem('role'))
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const overlayRef = useRef(null);
 
@@ -81,13 +82,13 @@ export default function MainDrawer() {
             <li className="pc-item pc-caption">
               <label>Pages</label>
             </li> */}
-            
-            <li className="pc-item">
+            {role.includes(['admin']) && <li className="pc-item">
               <Link className="pc-link" to="/getuser">
                 <span className="pc-micon"><i className="ph-duotone ph-users"></i></span>
                 Users
               </Link>
-            </li>
+            </li>}
+
 
             {/* <li className="pc-item">
               <Link className="pc-link" to="/products">
@@ -101,7 +102,7 @@ export default function MainDrawer() {
                 <span className="pc-micon"><i className="ph-duotone ph-user-circle"></i></span>
                 Profile
               </Link>
-            </li> */} 
+            </li> */}
 
             {/* <li className="pc-item">
               <Link className="pc-link" to="/logout">

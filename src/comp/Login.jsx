@@ -91,6 +91,9 @@ function Login({ className = '', link }) {
         toast.success(result.data.message)
         sessionStorage.setItem('accessToken', result.data.accessToken)
         localStorage.setItem('refreshToken', result.data.refreshToken)
+        localStorage.setItem('usersname',result.data.rawDetails.usersname)
+        localStorage.setItem('name',result.data.rawDetails.name)
+        localStorage.setItem('role',result.data.rawDetails.role)
 
         setTokens((prev) => ({
           ...prev,
