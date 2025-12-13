@@ -377,13 +377,15 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    
-}
-.heading-txt{
-    text-align: center;
-    font-size:x-large;
 
 }
+
+.heading-txt {
+    text-align: center;
+    font-size: x-large;
+
+}
+
 #close {
     margin-left: 50px;
 }
@@ -407,7 +409,7 @@ body {
     justify-content: flex-end !important;
 }
 
-.p-paginator-bottom > :first-child {
+.p-paginator-bottom> :first-child {
     margin-right: auto !important;
 }
 
@@ -418,4 +420,33 @@ body {
     color: white !important;
     border-radius: 50px;
     padding: 8px;
+}
+
+.contOfPriorityAndDatePicker{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    column-gap: 20px;
+}
+
+input[type="date"] {
+    max-width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #495057;
+    font-size: 1rem;
+}
+
+/* Make calendar icon visible and clean */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }

@@ -13,9 +13,8 @@ export function ProtectedRoutes({ children, requiredRole }) {
     }
 
     if (Array.isArray(requiredRole) && !requiredRole.includes(role)) {
-        return <Navigate to="/pagenotfound" replace />;
+        return <Navigate to="/pagenotfound" />;
     }
-
 
     return children
 }

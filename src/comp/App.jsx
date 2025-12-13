@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MainLayout from '../layout/Dashboard/index.jsx'
 import { EditUserDetails } from './EditUserDetails.jsx'
 import { NotFound } from './NotFound.jsx'
+import { CreateTask } from './CreateTask.jsx'
 
 export const StateContext = createContext()
 
@@ -117,7 +118,8 @@ function App() {
           <Route path='/logout' element={<ProtectedRoutes  requiredRole={['admin', 'user']}>{<LogOut />}</ProtectedRoutes>} />
           <Route path='/deleteaccount' element={<ProtectedRoutes requiredRole={['admin']}>{<DelAc />}</ProtectedRoutes>} />
           <Route path='/getuser' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<AllUsers />} />}</ProtectedRoutes>} />
-          <Route path='pagenotfound' element={<NotFound />} />
+          <Route path='/createtask' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<CreateTask />} />}</ProtectedRoutes>} />
+          <Route path='/pagenotfound' element={<NotFound />} />
           <Route path='*' element={<Navigate to={'/pagenotfound'} />} />
 
         </Routes>
