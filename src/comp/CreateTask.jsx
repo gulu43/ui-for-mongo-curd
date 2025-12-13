@@ -44,11 +44,11 @@ export function CreateTask() {
         priority: '' || 'medium',
         dueDate: '' || ref.current,
 
-        status: '',
-        isAssigned: '',
-        createdBy: `${localStorage.getItem('usersname')}`,
-        UpdatedBy: '',
-        isDeleted: '',
+        status: undefined,
+        isAssigned: undefined,
+        createdBy: undefined,
+        UpdatedBy: undefined,
+        isDeleted: undefined,
 
     })
     if (data.dueDate < refCurrent.current) {
@@ -62,7 +62,7 @@ export function CreateTask() {
         console.log("data in login: ", data)
     }, [data])
 
-    const handleCLick = (e) => {
+    const handleCLick = async (e) => {
         e.preventDefault()
 
         if (!data.title || !data.description || !data.priority || !data.dueDate) {
@@ -75,6 +75,15 @@ export function CreateTask() {
         }
         if (data.title.length < 3 || data.description < 3) {
             toast.error('Alteast 3 charater should be in feild/s')
+        }
+
+        const result = await api.post('/createtask', data)
+        console.log('fn result: ',result);
+        
+        if (result.status === 201) {
+            toast.success(result.data.message)
+        } else {
+            toast.error(result?.response?.data?.message)
         }
 
     }
