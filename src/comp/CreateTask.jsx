@@ -12,7 +12,7 @@ import '../../src/App.css'
 import { useRef } from 'react';
 
 
-export function CreateTask() {
+export function CreateTask({ reloadDataTableFn }) {
     const currentDate = new Date()
 
     const formatDate = (date) => {
@@ -82,6 +82,7 @@ export function CreateTask() {
         
         if (result.status === 201) {
             toast.success(result.data.message)
+            reloadDataTableFn()
         } else {
             toast.error(result?.response?.data?.message)
         }
