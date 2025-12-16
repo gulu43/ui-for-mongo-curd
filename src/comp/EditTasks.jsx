@@ -26,6 +26,7 @@ import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog m
 import { Dialog } from 'primereact/dialog';
 import { CreateTask } from './CreateTask.jsx';
 import { Tag } from 'primereact/tag';
+import { AssignTask } from './AssignTask.jsx';
 
 
 export function EditTasks() {
@@ -38,16 +39,16 @@ export function EditTasks() {
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false)
 
-    useEffect(() => {
-        getTasksFn()
-    }, [])
-
     const getTasksFn = async () => {
         setLoading(true)
         const result = await axiosInstance.get('/gettasks', {})
         setUsersData(result.data.allTasks)
         setLoading(false)
     }
+    
+    useEffect(() => {
+        getTasksFn()
+    }, [])
 
     const deleteTaskFn = async (id) => {
 
@@ -107,7 +108,10 @@ export function EditTasks() {
                 variant="primary"
                 size="sm"
                 onClick={() => {
-                    toast.info('Not implemented')
+                    // console.log(rowData._id)
+                    setSelectedUserId(rowData._id);
+                    setVisibleRight(prev => !prev)
+                    setOption('assign')
                 }}>
                 Assign
             </Button>
@@ -154,7 +158,7 @@ export function EditTasks() {
     };
 
     const deleteBodyTemplate = (rowData) => {
-        
+
         // console.log('Delete Id: ',rowData.title)
         return (
             <Button
@@ -173,7 +177,9 @@ export function EditTasks() {
     // };
 
     const assignStatusBodyTemplate = (rowData) => {
-        return rowData.status === true ? "Assigned" : "Not Assigned";
+        console.log('check: ',rowData);
+        
+        return rowData.isAssigned === true ? "Assigned" : "Not Assigned";
     };
 
     const headerForDrawer = (op) => {
@@ -240,7 +246,7 @@ export function EditTasks() {
         <>
             <ConfirmDialog />
             <Sidebar header={headerForDrawer(option)} visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
-                {/* {option === 'assigne' ? <EditUserDetails _id={{}} reloade={getUsersFn} par={'assigne'} editingRowData={{}} /> : <EditUserDetails _id={selectedUserId} reloade={getUsersFn} par={'edit'} editingRowData={currentEditData} />} */}
+                {option === 'assign' ? <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} /> : <EditUserDetails _id={selectedUserId} reloade={getTasksFn} par={'edit'} editingRowData={currentEditData} />}
             </Sidebar>
 
             <MainCard >
