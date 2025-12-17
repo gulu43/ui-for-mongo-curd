@@ -415,12 +415,12 @@ body {
 
 /* p-sidebar-close p-sidebar-icon p-link */
 /* .p-sidebar .p-sidebar-close { */
-.p-sidebar-close {
+/* .p-sidebar-close {
     background: red !important;
     color: white !important;
     border-radius: 50px;
     padding: 8px;
-}
+} */
 
 .contOfPriorityAndDatePicker{
     width: 100%;

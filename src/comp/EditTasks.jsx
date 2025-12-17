@@ -185,7 +185,7 @@ export function EditTasks() {
     const headerForDrawer = (op) => {
         return (
             <div className="heading-popup">
-                <div className='heading-txt'>{op === 'assign' ? "Assign Task" : "Edit User"}</div>
+                <div className='heading-txt'>{op === 'assign' ? "Assign User" : "Edit User"}</div>
             </div>
         );
     }

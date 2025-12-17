@@ -3,138 +3,116 @@ import MainCard from '../components/MainCard';
 import Form from 'react-bootstrap/Form';
 import axiosInstance from './axiosIntercepter';
 import { toast } from "react-toastify";
-import { Button, InputGroup } from 'react-bootstrap';
-import Image from 'react-bootstrap/Image';
+import { Dropdown } from 'primereact/dropdown';
 
-// import 
-import '../index.scss'
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import '../index.scss';
 
 export function AssignTask({ taskId_prop, reloade }) {
 
+    const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const [data, setData] = useState([])
-    const [searching, setSearching] = useState({
-        name: ''
-    });
-    const [storeData, setStoreData] = useState({
-        taskId: taskId_prop,
-        userId: {},
-        role: undefined, //default essigne 
-        addedBy: undefined, // add in backend   
-    })
+    const roles = [
+        { label: 'Assignee', value: 'assignee' },
+        { label: 'Watcher', value: 'watcher' }
+    ];
 
-    let handelClick = async (e) => {
-        e.preventDefault();
-
-        if (!searching.name) {
-            toast.error("Please select a user");
-            return;
-        }
-
-        if (!storeData.userId) {
-            toast.error("Please select a user");
-            return;
-        }
-
-        try {
-            await axiosInstance.post('/assigntask', storeData);
-            toast.success("Task assigned successfully");
-            reloade();
-        } catch (error) {
-            console.log('check:---', error);
-            if (error.response?.status === 400) {
-                toast.error("Feild/s are empty");
-                return;
-            }
-            if (error.response?.status === 409) {
-                toast.info("Already Assigned");
-                return;
-            }
-            toast.error("Failed to assign task");
-        }
-    };
-
-
-    const fetchAllUsersWithRoleUser = async (e) => {
-        const value = e.target.value;
-
-        setSearching(prev => ({ ...prev, name: value }));
-
-        if (value.length < 2) {
-            setData([]);
-            return;
-        }
-
-        try {
-            const result = await axiosInstance.post('/allroleusers', {
-                name: value
-            });
-
-            setData(result.data.usersList || []);
-
-        } catch (error) {
-            if (error.response?.status === 404) {
-                setData([]);
-            } else {
+    // Fetch users once
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const res = await axiosInstance.get('/getuser');
+                setUsers(res.data?.data || []);
+            } catch (error) {
                 console.error(error);
                 toast.error("Failed to fetch users");
             }
+        };
+        fetchUsers();
+    }, []);
+
+    const handelClick = async (e) => {
+        e.preventDefault();
+
+        if (!selectedUser) {
+            toast.error("Please select a user");
+            return;
+        }
+
+        if (!selectedRole) {
+            toast.error("Please select a role");
+            return;
+        }
+
+        const payload = {
+            taskId: taskId_prop,
+            userId: selectedUser._id,
+            role: selectedRole
+        };
+
+        try {
+            setLoading(true);
+            await axiosInstance.post('/assigntask', payload);
+            toast.success("Task assigned successfully");
+            reloade();
+        } catch (error) {
+            if (error.response?.status === 400) {
+                toast.error("Fields are required");
+                return;
+            }
+            if (error.response?.status === 409) {
+                toast.info("User already assigned");
+                return;
+            }
+            toast.error("Failed to assign task");
+        } finally {
+            setLoading(false);
         }
     };
 
-
-    useEffect(() => {
-        console.log(searching);
-
-    }, [searching])
-
-
-    useEffect(() => {
-        console.log("data from server: ", data)
-    }, [data])
-
-    // const [data, setData] = useState({
-    //     taskId: taskId,
-    //     userId: '',
-    //     role: '',
-    //     addedBy: '',
-    // })
-
     return (
-        <>
-            <MainCard className="mb-0">
+        <MainCard className="mb-0">
+            <Form noValidate>
 
-                <Form noValidate>
-                    {/* name */}
-                    <Form.Group className="mb-3" controlId="name">
-                        <Form.Label>Search Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="name"
-                            value={searching.name || ""}
-                            onChange={fetchAllUsersWithRoleUser}
-                        />
-                    </Form.Group>
+                {/* User Dropdown */}
+                <div className="mb-3">
+                    <Dropdown
+                        value={selectedUser}
+                        onChange={(e) => setSelectedUser(e.value)}
+                        options={users}
+                        optionLabel="name"
+                        placeholder="Select User"
+                        filter
+                        className="w-100"
+                    />
+                </div>
 
-                    <Form.Select className="mb-3" onChange={(e) => {
-                        setStoreData((prev) => ({
-                            ...prev,
-                            userId: e.target.value
-                        }))
-                    }}>
-                        <option>Open this select user</option>
-                        {/* {console.log(data)} */}
-                        {data.map((ele) => (
-                            <option key={ele._id} value={ele._id}>{ele.name}</option>
-                        ))}
+                {/* Role Dropdown */}
+                <div className="mb-3">
+                    <Dropdown
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.value)}
+                        options={roles}
+                        optionLabel="label"
+                        placeholder="Select Role"
+                        className="w-100"
+                    />
+                </div>
 
-                    </Form.Select>
+                {/* Save Button */}
+                <button
+                    className="w-100 btn btn-primary"
+                    style={{ fontSize: '110%' }}
+                    onClick={handelClick}
+                    disabled={loading}
+                >
+                    {loading ? 'Assigning...' : 'Save'}
+                </button>
 
-                    <button className="w-100 btn btn-primary" style={{ fontSize: '110%' }} onClick={handelClick}>Save</button>
-
-                </Form>
-
-            </MainCard>
-        </>
+            </Form>
+        </MainCard>
     );
 }
