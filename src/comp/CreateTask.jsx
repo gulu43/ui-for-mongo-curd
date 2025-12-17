@@ -10,9 +10,14 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import '../../src/App.css'
 import { useRef } from 'react';
+import { FileUpload } from 'primereact/fileupload';
 
 
 export function CreateTask({ reloadDataTableFn }) {
+
+    const [files, setFiles] = useState([]);
+
+
     const currentDate = new Date()
 
     const formatDate = (date) => {
@@ -62,37 +67,78 @@ export function CreateTask({ reloadDataTableFn }) {
         console.log("data in login: ", data)
     }, [data])
 
+    // const handleCLick = async (e) => {
+    //     e.preventDefault()
+
+    //     if (!data.title || !data.description || !data.priority || !data.dueDate) {
+    //         console.log(data.title);
+    //         console.log(data.description);
+    //         console.log(data.priority);
+    //         console.log(data.dueDate);
+
+    //         toast.error('Fields should not be empty')
+    //     }
+    //     if (data.title.length < 3 || data.description < 3) {
+    //         toast.error('Alteast 3 charater should be in feild/s')
+    //     }
+
+    //     const result = await api.post('/createtask', data)
+    //     console.log('fn result: ', result);
+
+    //     if (result.status === 201) {
+    //         toast.success(result.data.message)
+    //         reloadDataTableFn()
+    //     } else {
+    //         toast.error(result?.response?.data?.message)
+    //     }
+
+    // }
+
     const handleCLick = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         if (!data.title || !data.description || !data.priority || !data.dueDate) {
-            console.log(data.title);
-            console.log(data.description);
-            console.log(data.priority);
-            console.log(data.dueDate);
-
-            toast.error('Fields should not be empty')
-        }
-        if (data.title.length < 3 || data.description < 3) {
-            toast.error('Alteast 3 charater should be in feild/s')
+            toast.error('Fields should not be empty');
+            return;
         }
 
-        const result = await api.post('/createtask', data)
-        console.log('fn result: ',result);
-        
-        if (result.status === 201) {
-            toast.success(result.data.message)
-            reloadDataTableFn()
-        } else {
-            toast.error(result?.response?.data?.message)
+        if (data.title.length < 3 || data.description.length < 3) {
+            toast.error('At least 3 characters required');
+            return;
         }
 
-    }
+        const formData = new FormData();
+
+        // text fields
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('priority', data.priority);
+        formData.append('dueDate', data.dueDate);
+
+        // files
+        if (files.length > 0) {
+            files.forEach(file => {
+                formData.append('attachments', file);
+            });
+        }
+
+        try {
+            const result = await api.post('/createtask', formData);
+
+            if (result.status === 201) {
+                toast.success(result.data.message);
+                reloadDataTableFn();
+            }
+        } catch (err) {
+            toast.error(err?.response?.data?.message || 'Error creating task');
+        }
+    };
+
     return (
         <>
             <MainCard className="mb-0"  >
                 <div className='flex-between'>
-                    <span><b>Users Data</b> </span>
+                    {/* <span><b>Create Task</b> </span> */}
 
                     {/* <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             // setPopupstate(prev => !prev);
@@ -174,6 +220,26 @@ export function CreateTask({ reloadDataTableFn }) {
 
 
                 </div>
+
+                <div className="card">
+                    <FileUpload
+                        name="attachments"
+                        multiple
+                        customUpload
+                        auto={false}
+                        accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                        maxFileSize={5 * 1024 * 1024}
+                        onSelect={(e) => {
+                            setFiles(e.files);
+                        }}
+                        emptyTemplate={
+                            <p className="m-0">
+                                Drag and drop files here to attach
+                            </p>
+                        }
+                    />
+                </div>
+
                 <span>
 
                     <Button variant="primary" size="md" onClick={handleCLick}>

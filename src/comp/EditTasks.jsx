@@ -259,7 +259,7 @@ export function EditTasks() {
 
                         }}>Add Task</Button>
 
-                        <Dialog header="Header" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
+                        <Dialog header="Create Task" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
                             style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                             <CreateTask reloadDataTableFn={getTasksFn} />
                         </Dialog>
