@@ -7,7 +7,7 @@ import '../index.scss'
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import Button from 'react-bootstrap/Button';
+import BootStrapButton from 'react-bootstrap/Button';
 import '../../src/App.css'
 import { useRef } from 'react';
 import { FileUpload } from 'primereact/fileupload';
@@ -133,122 +133,132 @@ export function CreateTask({ reloadDataTableFn }) {
             toast.error(err?.response?.data?.message || 'Error creating task');
         }
     };
-
+    const headerTemplate = (options) => {
+        const { className, chooseButton, cancelButton } = options;
+        return (
+            <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+                {chooseButton}
+                {cancelButton}
+            </div>
+        );
+    };
     return (
         <>
-            <MainCard className="mb-0"  >
-                <div className='flex-between'>
-                    {/* <span><b>Create Task</b> </span> */}
+            {/* <MainCard className="mb-0"  > */}
+            <div className='flex-between'>
+                {/* <span><b>Create Task</b> </span> */}
 
-                    {/* <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
+                {/* <button variant="outline-danger" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             // setPopupstate(prev => !prev);
                             setVisibleRight(prev => !prev)
                             setOption('add')
 
                         }}>Edit Task</button> */}
-                </div>
-                <div>
-                    <Form.Group className="mb-3" controlId="title">
-                        <Form.Control
-                            type="text"
-                            placeholder="Title"
-                            name="title"
-                            value={data.title}
-                            onChange={(e) =>
-                                setData((prev) => ({
-                                    ...prev,
-                                    title: e.target.value
-                                }))
-                            }
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="description">
-                        <Form.Control
-                            as="textarea"
-                            rows={3}
-                            placeholder="Description"
-                            name="description"
-                            value={data.description}
-                            onChange={(e) =>
-                                setData((prev) => ({
-                                    ...prev,
-                                    description: e.target.value
-                                }))
-                            }
-                        />
-                    </Form.Group>
-
-                </div>
-                <div className='contOfPriorityAndDatePicker'>
-                    {/* priority (string) */}
-                    <Form.Group style={{ maxWidth: '100%' }} className="mb-3" controlId="priority">
-                        <Form.Label>Priority</Form.Label>
-                        <Form.Select
-                            name="priority"
-                            value={data.priority || 'medium'}
-                            onChange={(e) =>
-
-                                setData((prev) => ({
-                                    ...prev,
-                                    priority: e.target.value
-                                }))
-                            }
-                        >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                        </Form.Select>
-                    </Form.Group>
-
-                    {/* Date */}
-                    <Form.Group className="mb-3" controlId="dueDate">
-                        <Form.Label>Due Date</Form.Label>
-                        <Form.Control
-                            type="date"
-                            name="dueDate"
-                            value={data.dueDate || ""}
-                            onChange={(e) =>
-                                setData((prev) => ({
-                                    ...prev,
-                                    dueDate: e.target.value,
-                                }))
-                            }
-                        />
-                    </Form.Group>
-
-
-                </div>
-
-                <div className="card">
-                    <FileUpload
-                        name="attachments"
-                        multiple
-                        customUpload
-                        auto={false}
-                        accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
-                        maxFileSize={5 * 1024 * 1024}
-                        onSelect={(e) => {
-                            setFiles(e.files);
-                        }}
-                        emptyTemplate={
-                            <p className="m-0">
-                                Drag and drop files here to attach
-                            </p>
+            </div>
+            <div>
+                <Form.Group className="mb-3" controlId="title">
+                    <Form.Control
+                        type="text"
+                        placeholder="Title"
+                        name="title"
+                        value={data.title}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                title: e.target.value
+                            }))
                         }
                     />
-                </div>
+                </Form.Group>
 
-                <span>
+                <Form.Group className="mb-3" controlId="description">
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        placeholder="Description"
+                        name="description"
+                        value={data.description}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                description: e.target.value
+                            }))
+                        }
+                    />
+                </Form.Group>
 
-                    <Button variant="primary" size="md" onClick={handleCLick}>
-                        Create
-                    </Button>
-                </span>
+            </div>
+            <div className='contOfPriorityAndDatePicker'>
+                {/* priority (string) */}
+                <Form.Group style={{ maxWidth: '100%' }} className="mb-3" controlId="priority">
+                    <Form.Label>Priority</Form.Label>
+                    <Form.Select
+                        name="priority"
+                        value={data.priority || 'medium'}
+                        onChange={(e) =>
+
+                            setData((prev) => ({
+                                ...prev,
+                                priority: e.target.value
+                            }))
+                        }
+                    >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </Form.Select>
+                </Form.Group>
+
+                {/* Date */}
+                <Form.Group className="mb-3" controlId="dueDate">
+                    <Form.Label>Due Date</Form.Label>
+                    <Form.Control
+                        type="date"
+                        name="dueDate"
+                        value={data.dueDate || ""}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                dueDate: e.target.value,
+                            }))
+                        }
+                    />
+                </Form.Group>
 
 
-            </MainCard>
+            </div>
+
+            <div className="card">
+                <FileUpload
+
+                    name="attachments"
+                    multiple
+                    customUpload
+                    auto={false}
+                    headerTemplate={headerTemplate}
+                    accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                    maxFileSize={5 * 1024 * 1024}
+                    onSelect={(e) => {
+                        setFiles(e.files);
+                    }}
+                    emptyTemplate={
+                        <p className="m-0">
+                            Drag and drop files here to attach
+                        </p>
+                    }
+                />
+            </div>
+
+            <span>
+
+                <BootStrapButton variant="primary" size="md" onClick={handleCLick}>
+                    Create
+                </BootStrapButton>
+            </span>
+
+
+            {/* </MainCard> */}
         </>
     );
 }

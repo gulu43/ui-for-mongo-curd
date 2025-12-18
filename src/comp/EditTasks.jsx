@@ -45,7 +45,7 @@ export function EditTasks() {
         setUsersData(result.data.allTasks)
         setLoading(false)
     }
-    
+
     useEffect(() => {
         getTasksFn()
     }, [])
@@ -109,8 +109,9 @@ export function EditTasks() {
                 size="sm"
                 onClick={() => {
                     // console.log(rowData._id)
+                    // setVisibleRight(prev => !prev)
                     setSelectedUserId(rowData._id);
-                    setVisibleRight(prev => !prev)
+                    setVisible(prev => !prev)
                     setOption('assign')
                 }}>
                 Assign
@@ -177,15 +178,15 @@ export function EditTasks() {
     // };
 
     const assignStatusBodyTemplate = (rowData) => {
-        console.log('check: ',rowData);
-        
+        console.log('check: ', rowData);
+
         return rowData.isAssigned === true ? "Assigned" : "Not Assigned";
     };
 
     const headerForDrawer = (op) => {
         return (
             <div className="heading-popup">
-                <div className='heading-txt'>{op === 'assign' ? "Assign User" : "Edit User"}</div>
+                <div className='heading-txt'>Create Task</div>
             </div>
         );
     }
@@ -245,9 +246,27 @@ export function EditTasks() {
     return (
         <>
             <ConfirmDialog />
-            <Sidebar header={headerForDrawer(option)} visible={visibleRight} position="right" onHide={() => setVisibleRight(false)}>
-                {option === 'assign' ? <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} /> : <EditUserDetails _id={selectedUserId} reloade={getTasksFn} par={'edit'} editingRowData={currentEditData} />}
+            <Sidebar header={headerForDrawer(option)} visible={visibleRight} position="right" onHide={() => setVisibleRight(false)} breakpoints={{
+                    '960px': '100vw',   
+                    '640px': '310px'   
+                }}>
+                <CreateTask reloadDataTableFn={getTasksFn} />
+                {/* {option === 'assign' ? <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} /> : <EditUserDetails _id={selectedUserId} reloade={getTasksFn} par={'edit'} editingRowData={currentEditData} />} */}
             </Sidebar>
+
+            <Dialog header="Assign Member" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
+                // style={{ width: '310px' }} 
+                style={{ width: '25vw', minWidth: '310px' }}  
+                breakpoints={{
+                    '960px': '55vw',   
+                    '640px': '310px'   
+                }}>
+
+                {/* breakpoints={{ '960px': '25vw', '641px': '100vw' }} */}
+                <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} />
+                {/* <CreateTask reloadDataTableFn={getTasksFn} /> */}
+            </Dialog>
+
 
             <MainCard >
                 <span className='Add-Feth-cont' id='toggle-btn'>
@@ -255,15 +274,10 @@ export function EditTasks() {
                         <span><b>Tasks Data</b> </span>
 
                         <Button variant="" type="button" className="btn btn-primary btn-sm" onClick={() => {
-                            setVisible(prev => !prev)
+                            // setVisible(prev => !prev)
+                            setVisibleRight(prev => !prev)
 
-                        }}>Add Task</Button>
-
-                        <Dialog header="Create Task" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
-                            style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                            <CreateTask reloadDataTableFn={getTasksFn} />
-                        </Dialog>
-
+                        }}>Create Task</Button>
 
                     </div>
                 </span>

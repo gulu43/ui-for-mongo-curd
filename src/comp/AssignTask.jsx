@@ -12,13 +12,13 @@ export function AssignTask({ taskId_prop, reloade }) {
 
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedRole, setSelectedRole] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    
     const roles = [
         { label: 'Assignee', value: 'assignee' },
-        { label: 'Watcher', value: 'watcher' }
+        // { label: 'Watcher', value: 'watcher' }
     ];
+    const [selectedRole, setSelectedRole] = useState(roles[0].value);
 
     // Fetch users once
     useEffect(() => {
@@ -93,7 +93,9 @@ export function AssignTask({ taskId_prop, reloade }) {
                 {/* Role Dropdown */}
                 <div className="mb-3">
                     <Dropdown
-                        value={selectedRole}
+                        disabled
+                        value={roles[0].value}
+                        // value={selectedRole}
                         onChange={(e) => setSelectedRole(e.value)}
                         options={roles}
                         optionLabel="label"
@@ -101,7 +103,7 @@ export function AssignTask({ taskId_prop, reloade }) {
                         className="w-100"
                     />
                 </div>
-
+               
                 {/* Save Button */}
                 <button
                     className="w-100 btn btn-primary"
