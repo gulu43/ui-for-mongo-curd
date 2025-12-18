@@ -133,15 +133,38 @@ export function CreateTask({ reloadDataTableFn }) {
             toast.error(err?.response?.data?.message || 'Error creating task');
         }
     };
+    const chooseOptions = {
+        icon: 'pi pi-fw pi-images',
+        iconOnly: true,
+        className: 'custom-choose-btn p-button-rounded p-button-outlined'
+    };
+
+    // 2. Configure the "Cancel" button (Icon only, danger color, rounded, outlined)
+    const cancelOptions = {
+        icon: 'pi pi-fw pi-times',
+        iconOnly: true,
+        className: 'custom-cancel-btn p-button-rounded p-button-danger p-button-outlined'
+    };
+
+    // 3. Define the Header Template to arrange the buttons
     const headerTemplate = (options) => {
         const { className, chooseButton, cancelButton } = options;
         return (
-            <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+            <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 {chooseButton}
                 {cancelButton}
             </div>
         );
     };
+    // const headerTemplate1 = (options) => {
+    //     const { className, chooseButton, cancelButton } = options;
+    //     return (
+    //         <div className={className} style={{ backgroundColor: 'transparent', display: 'flex', alignItems: 'center' }}>
+    //             {chooseButton}
+    //             {cancelButton}
+    //         </div>
+    //     );
+    // };
     return (
         <>
             {/* <MainCard className="mb-0"  > */}
@@ -237,6 +260,8 @@ export function CreateTask({ reloadDataTableFn }) {
                     customUpload
                     auto={false}
                     headerTemplate={headerTemplate}
+                    chooseOptions={chooseOptions}
+                    cancelOptions={cancelOptions}
                     accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
                     maxFileSize={5 * 1024 * 1024}
                     onSelect={(e) => {

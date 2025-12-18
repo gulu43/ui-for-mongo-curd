@@ -1,25 +1,9 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { StateContext } from './App.jsx';
-import { Register } from './Register.jsx';
-import axios from 'axios';
-import '../App.css'
-import axiosInstance from './axiosIntercepter.js';
-import { Table } from 'react-bootstrap';
-import MainCard from '../components/MainCard.jsx';
-import '../index.scss';
-import { Button } from 'react-bootstrap';
-import { EditUserDetails } from './EditUserDetails.jsx';
-import { toast } from "react-toastify";
-// import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { FilterMatchMode } from 'primereact/api';
 import { InputText } from 'primereact/inputtext';
-import { Button as ButtonPR } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { ConfirmDialog } from 'primereact/confirmdialog'; // For <ConfirmDialog /> component
 import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
@@ -27,6 +11,17 @@ import { Dialog } from 'primereact/dialog';
 import { CreateTask } from './CreateTask.jsx';
 import { Tag } from 'primereact/tag';
 import { AssignTask } from './AssignTask.jsx';
+import { Button } from 'react-bootstrap';
+import { Button as PrimePreactButton } from 'primereact/button';
+import { toast } from "react-toastify";
+import MainCard from '../components/MainCard.jsx';
+import axiosInstance from './axiosIntercepter.js';
+import '../App.css'
+import '../index.scss';
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
 
 
 export function EditTasks() {
@@ -39,6 +34,7 @@ export function EditTasks() {
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false)
 
+    const navigate = useNavigate()
     const getTasksFn = async () => {
         setLoading(true)
         const result = await axiosInstance.get('/gettasks', {})
@@ -242,24 +238,34 @@ export function EditTasks() {
         return newFormat
 
     };
+    const expandBodyTemplate = (rowData) => {
 
+        return (
+            <PrimePreactButton icon="pi pi-link" severity="info" onClick={() => {
+                toast.info(rowData._id)
+                navigate(`/taskDetails/${rowData._id}`)
+            }} />
+
+        )
+    }
+    
     return (
         <>
             <ConfirmDialog />
             <Sidebar header={headerForDrawer(option)} visible={visibleRight} position="right" onHide={() => setVisibleRight(false)} breakpoints={{
-                    '960px': '100vw',   
-                    '640px': '310px'   
-                }}>
+                '960px': '100vw',
+                '640px': '310px'
+            }}>
                 <CreateTask reloadDataTableFn={getTasksFn} />
                 {/* {option === 'assign' ? <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} /> : <EditUserDetails _id={selectedUserId} reloade={getTasksFn} par={'edit'} editingRowData={currentEditData} />} */}
             </Sidebar>
 
             <Dialog header="Assign Member" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
                 // style={{ width: '310px' }} 
-                style={{ width: '25vw', minWidth: '310px' }}  
+                style={{ width: '25vw', minWidth: '310px' }}
                 breakpoints={{
-                    '960px': '55vw',   
-                    '640px': '310px'   
+                    '960px': '55vw',
+                    '640px': '310px'
                 }}>
 
                 {/* breakpoints={{ '960px': '25vw', '641px': '100vw' }} */}
@@ -283,10 +289,12 @@ export function EditTasks() {
                 </span>
 
                 {/* <div className=""> */}
-                <DataTable value={usersData} loading={loading} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
+                <DataTable value={usersData} stripedRows loading={loading} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
                     scrollable scrollHeight="65vh"
                     header={header}
                     filters={filters}
+                    // resizableColumns 
+                    // showGridlines 
                     globalFilterFields={['title', 'priority', 'dueDate', 'createdBy.usersname', 'status']}
                     emptyMessage="No task found."
                     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
@@ -298,6 +306,7 @@ export function EditTasks() {
                     {/* <Column field="userId" header="Sl.no." style={{ width: 'auto' }}></Column> */}
                     <Column header="SL No" body={(rowData, options) => options.rowIndex + 1} />
                     <Column field="title" header="Title" style={{ width: 'auto' }}></Column>
+                    <Column header="Expand" body={expandBodyTemplate} style={{ width: 'auto' }}></Column>
                     <Column header="Description" body={descriptionBodyTemplate} style={{ width: '15%' }}></Column>
                     <Column field="status" header="Status" style={{ width: 'auto' }}></Column>
                     <Column header="Due-Date" body={dateDDMMYY} style={{ width: 'auto' }}></Column>

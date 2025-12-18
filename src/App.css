@@ -422,7 +422,7 @@ body {
     padding: 8px;
 } */
 
-.contOfPriorityAndDatePicker{
+.contOfPriorityAndDatePicker {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -449,4 +449,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
+}
+
+/* detail view css below */
+.detailTaskCont {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.leftPartCont {
+    width: 80%;
+    height: 100%;
+
+}
+
+.rightPartCont {
+    width: 20%;
+    height: 100%;
+
 }
