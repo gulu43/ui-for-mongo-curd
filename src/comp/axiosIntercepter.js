@@ -22,7 +22,7 @@ function processQueue(error, token = null) {
 
 api.interceptors.request.use((config) => {
     const accessToken = sessionStorage.getItem('accessToken')
-    console.log('what i am sending', accessToken);
+    // console.log('what i am sending', accessToken);
 
     if (accessToken) {
         config.headers.accesstoken = accessToken

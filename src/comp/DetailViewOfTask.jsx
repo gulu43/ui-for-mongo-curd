@@ -33,12 +33,31 @@ export function DetailViewOfTask() {
 
   }, [returnedData])
 
-  // useEffect(() => {
-  //   toast.info(`_id ${selectedItem}`)
-  //   if (selectedItem === null) {
-  //     window.location.href = `http://localhost:4000/attachments/download/${selectedItem}`;
-  //   }
-  // }, [selectedItem])
+  const handlerFn = async (attachmentId, fileName) => {
+    try {
+      const res = await axiosInstance.get(
+        `/attachments/download/${attachmentId}`,
+        {
+          responseType: 'blob', // VERY IMPORTANT
+        }
+      );
+
+      const blob = new Blob([res.data]);
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName || 'download';
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
 
   return (
     <>
@@ -50,7 +69,7 @@ export function DetailViewOfTask() {
             <div className='attachment_array'>
               {returnedData?.data?.attachments.map((file) => (
                 <div className='attachmentCard' onClick={() => {
-                  window.location.href = `http://localhost:4000/attachments/download/${file._id}`;
+                  handlerFn(file._id, file.fileName)
                 }} key={file._id}>
                   {/* {console.log('typeOf: ', typeof (file.mimeType))} */}
                   {(file.mimeType.includes('image')) ? <img className='banner_image' src={`${file.fileUrl}`} alt="image" /> : <div className='test'>{file.mimeType}</div>}
