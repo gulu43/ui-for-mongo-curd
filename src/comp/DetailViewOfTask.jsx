@@ -4,6 +4,7 @@ import axiosInstance from './axiosIntercepter';
 import MainCard from '../components/MainCard';
 import { Card } from 'primereact/card';
 
+import { toast } from 'react-toastify';
 import '../App.css'
 import '../index.scss';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -12,6 +13,8 @@ import "primeicons/primeicons.css";
 
 export function DetailViewOfTask() {
   const [returnedData, setReturnedData] = useState(null)
+  const [selectedItem, setSelectedItem] = useState(null)
+
   const { id } = useParams();
   useEffect(() => {
     const gettingTaskData = async () => {
@@ -25,12 +28,37 @@ export function DetailViewOfTask() {
     gettingTaskData()
   }, [id])
 
+  useEffect(() => {
+    console.log(returnedData?.data?.task || '');
+
+  }, [returnedData])
+
+  // useEffect(() => {
+  //   toast.info(`_id ${selectedItem}`)
+  //   if (selectedItem === null) {
+  //     window.location.href = `http://localhost:4000/attachments/download/${selectedItem}`;
+  //   }
+  // }, [selectedItem])
+
   return (
     <>
       <MainCard>
         <div className='detailTaskCont'>
           <div className='leftPartCont'>
-            <h2>{ }</h2>
+            <h3>{returnedData?.data?.task?.title || ''}</h3>
+            <p>{returnedData?.data?.task?.description || ''}</p>
+            <div className='attachment_array'>
+              {returnedData?.data?.attachments.map((file) => (
+                <div className='attachmentCard' onClick={() => {
+                  window.location.href = `http://localhost:4000/attachments/download/${file._id}`;
+                }} key={file._id}>
+                  {/* {console.log('typeOf: ', typeof (file.mimeType))} */}
+                  {(file.mimeType.includes('image')) ? <img className='banner_image' src={`${file.fileUrl}`} alt="image" /> : <div className='test'>{file.mimeType}</div>}
+
+                </div>
+              ))}
+
+            </div>
           </div>
           <div className='rightPartCont'></div>
         </div>

@@ -470,3 +470,34 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     height: 100%;
 
 }
+
+.attachment_array{
+    width: 100%;
+    height: 140px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    /* border: 1px solid black; */
+    box-sizing: border-box;
+    column-gap: 5px;
+}
+.attachmentCard{
+    min-width: 120px;
+    height: 120px;
+    border: 1px solid gray;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.banner_image{
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+}
+.test{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid green; */
+}
