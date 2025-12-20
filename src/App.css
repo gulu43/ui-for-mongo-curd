@@ -501,3 +501,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     align-items: center;
     /* border: 1px solid green; */
 }
+.comment-text {
+  line-height: 1.6;
+  font-size: 0.95rem;
+}

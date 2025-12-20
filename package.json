@@ -19,6 +19,7 @@
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
     "prop-types": "^15.8.1",
+    "quill": "^2.0.3",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-device-detect": "^2.2.3",
