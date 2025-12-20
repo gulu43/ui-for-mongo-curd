@@ -473,7 +473,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 .attachment_array{
     width: 100%;
-    height: 140px;
+    max-height: 140px;
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
@@ -487,6 +487,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     border: 1px solid gray;
     border-radius: 15px;
     overflow: hidden;
+    display: block;
 }
 .banner_image{
     width: 100%;

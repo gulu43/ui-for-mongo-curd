@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './axiosIntercepter';
 import MainCard from '../components/MainCard';
@@ -26,6 +26,7 @@ export function DetailViewOfTask() {
   const [text, setText] = useState('');
   const [files, setFiles] = useState([]);
   const [comments, setComments] = useState([]);
+  const [allAttachments, setAllAttachments] = useState([]);
 
   const { id } = useParams();
 
@@ -36,6 +37,8 @@ export function DetailViewOfTask() {
       console.log('task: ', result.data.task);
       console.log('attachments: ', result.data.attachments);
       console.log('members: ', result.data.members);
+      console.log('Result: ', result);
+
 
     }
     gettingTaskData()
@@ -114,7 +117,8 @@ export function DetailViewOfTask() {
     if (result.status == 201) {
       toast.success('Comment Added')
       const allComments = await axiosInstance.post('/allcomments', { taskId: id })
-      setComments(allComments.data.allComments)
+      console.log('allComments', allComments.data.allcomments);
+      setComments(allComments.data.allcomments)
     }
 
   }
@@ -123,9 +127,53 @@ export function DetailViewOfTask() {
     // console.log('comments all: ', comments);
     (async () => {
       const allComments = await axiosInstance.post('/allcomments', { taskId: id })
+      console.log('allComments', allComments.data.allcomments);
+      // console.log('send to attechments: ', allComments.data.allcomments[0].attachments[0].mimeType);
+
+      const cmtFiles = allComments.data.allcomments.map((cmt) => (
+        cmt.attachments.map((file) => ({
+          '_id': file._id,
+          'fileName': file.fileName,
+          'filePath': file.filePath,
+          'mimeType': file.mimeType,
+          'fileExt': file.fileExt,
+          'fileUrl': file.fileUrl,
+          'fileSize': file.fileSize,
+        }))
+      ))
+      // console.log('Returned data: ',returnedData);
+      console.log('created data:', cmtFiles);
+
+      // setReturnedData((prev) => ({
+      //   ...prev,
+      //   data: data.map(allthree => ({
+      //     ...allthree,
+      //     attachmentId : cmtFiles
+      //   }))
+      // }))
+      // attachments: cmtFiles
+
       setComments(allComments.data.allcomments)
     })();
   }, [])
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await axiosInstance.post('/allcomments', { taskId: id });
+  //     const allComments = res.data.allcomments;
+
+  //     setComments(allComments);
+
+  //     const commentAttachments = allComments.flatMap(cmt =>
+  //       cmt.attachments || []
+  //     );
+
+  //     const taskAttachments = returnedData?.data?.attachments || [];
+
+  //     setAllAttachments([...taskAttachments, ...commentAttachments]);
+  //   })();
+  // }, [id, returnedData]);
+
 
   const renderHeader = (name) => {
     return (
@@ -148,19 +196,43 @@ export function DetailViewOfTask() {
                 <b>Attechments</b>
               </div>
             </Divider>
-            <div className='attachment_array'>
-              {(returnedData?.data?.attachments || []).map((file) => (
-                <div className='attachmentCard'
-                  onClick={() => { handlerFn(file._id, file.fileName) }}
-                  key={file._id}>
-                  {
-                    (file.mimeType.includes('image')) ?
-                      <img className='banner_image' src={`${file.fileUrl}`} alt="image" /> :
-                      <div className='test'>{file.mimeType}</div>
-                  }
-                </div>
 
-              ))}
+            <div className='attachment_array'>
+              {
+                // (allAttachments || []).map(file => (
+                //   <div
+                //     className="attachmentCard"
+                //     key={file._id}
+                //     onClick={() => handlerFn(file._id, file.fileName)}
+                //   >
+                //     {file.mimeType?.includes('image') ? (
+                //       <img className="banner_image" src={file.fileUrl} alt="" />
+                //     ) : (
+                //       <div className="test">{file.mimeType}</div>
+                //     )}
+                //   </div>
+                // ))
+                (returnedData?.data?.attachments || [
+                  {
+                    _id: 43,
+                    filename: 'ok',
+                    fileUrl: '',
+                    mineType: 'No File Found'
+                  }
+                ]).map((file) => (
+                  <div className='attachmentCard'
+                    onClick={() => { handlerFn(file._id, file.fileName) }}
+                    key={file._id}>
+                    {
+                      (file?.mimeType?.includes('image')) ?
+                        <img className='banner_image' src={`${file?.fileUrl}`} alt="image" /> :
+                        <div className='test'>{file?.mimeType || 'No file Found'}</div>
+                    }
+                  </div>
+
+                ))
+              }
+
             </div>
             <Divider align="left">
               <div className="inline-flex align-items-center">
@@ -173,7 +245,6 @@ export function DetailViewOfTask() {
             </div>
             <div className="card">
               <FileUpload
-
                 name="attachments"
                 multiple
                 customUpload
@@ -198,34 +269,12 @@ export function DetailViewOfTask() {
             </Divider>
 
             <div className='comment-Section'>
-              {/* {
-                (comments || []).map((cmt) => (
-                  <div className="card" key={cmt._id}>
-                    <Fieldset legend={commentLegendTemplate(cmt.commentedBy.name)} toggleable>
-                      <div className="m-0">
-                        <Editor value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name)} style={{ height: 'auto' }} />
+              {(comments || []).map((cmt) => (
+                <Editor key={cmt._id} className='card mb-2' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name)} style={{ height: 'auto' }} />
 
-                        <div className="comment-text" dangerouslySetInnerHTML={{ __html: cmt.message }} />
-                      </div>
-                    </Fieldset>
-                  </div>
-                ))
-              } */}
-              {
-                (comments || []).map((cmt) => (
-
-                  <Editor key={cmt._id} className='card mb-2' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name)} style={{ height: 'auto' }} />
-
-                ))
-              }
+              ))}
             </div>
           </div>
-          {/* <div className='rightPartCont'>
-            <div >Name: {returnedData?.data?.members[0]?.userId?.name}</div>
-            <div >Role: {returnedData?.data?.members[0]?.role == 'assignee' ? 'Assignee' : 'Watcher'}</div>
-            <div >AddedBy: {returnedData?.data?.members[0]?.addedBy?.name}</div>
-          </div> */}
-          {/* ... existing code ... */}
 
           <div className='rightPartCont'>
             {/* We wrap the logic in a check to ensure data exists */}
@@ -278,7 +327,6 @@ export function DetailViewOfTask() {
             )}
           </div>
 
-          {/* ... existing code ... */}
         </div>
       </MainCard>
     </>
