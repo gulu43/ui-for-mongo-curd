@@ -114,66 +114,38 @@ export function DetailViewOfTask() {
     const result = await axiosInstance.post('/addcomment', formData)
     console.log('output: ', result);
 
-    if (result.status == 201) {
-      toast.success('Comment Added')
-      const allComments = await axiosInstance.post('/allcomments', { taskId: id })
-      console.log('allComments', allComments.data.allcomments);
-      setComments(allComments.data.allcomments)
+    if (result.status === 201) {
+      toast.success('Comment Added');
+      setText('');
+      setFiles([]);
+      await syncAttachmentsAndComments();
     }
 
   }
 
+  const syncAttachmentsAndComments = async () => {
+    const [taskRes, commentRes] = await Promise.all([
+      axiosInstance.post('/gettaskdetails', { id }),
+      axiosInstance.post('/allcomments', { taskId: id })
+    ]);
+
+    setReturnedData(taskRes);
+    setComments(commentRes.data.allcomments);
+
+    const taskAttachments = taskRes.data.attachments || [];
+    const commentAttachments = commentRes.data.allcomments.flatMap(
+      cmt => cmt.attachments || []
+    );
+
+    setAllAttachments([...taskAttachments, ...commentAttachments]);
+  };
+
+
   useEffect(() => {
-    // console.log('comments all: ', comments);
-    (async () => {
-      const allComments = await axiosInstance.post('/allcomments', { taskId: id })
-      console.log('allComments', allComments.data.allcomments);
-      // console.log('send to attechments: ', allComments.data.allcomments[0].attachments[0].mimeType);
-
-      const cmtFiles = allComments.data.allcomments.map((cmt) => (
-        cmt.attachments.map((file) => ({
-          '_id': file._id,
-          'fileName': file.fileName,
-          'filePath': file.filePath,
-          'mimeType': file.mimeType,
-          'fileExt': file.fileExt,
-          'fileUrl': file.fileUrl,
-          'fileSize': file.fileSize,
-        }))
-      ))
-      // console.log('Returned data: ',returnedData);
-      console.log('created data:', cmtFiles);
-
-      // setReturnedData((prev) => ({
-      //   ...prev,
-      //   data: data.map(allthree => ({
-      //     ...allthree,
-      //     attachmentId : cmtFiles
-      //   }))
-      // }))
-      // attachments: cmtFiles
-
-      setComments(allComments.data.allcomments)
-    })();
-  }, [])
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await axiosInstance.post('/allcomments', { taskId: id });
-  //     const allComments = res.data.allcomments;
-
-  //     setComments(allComments);
-
-  //     const commentAttachments = allComments.flatMap(cmt =>
-  //       cmt.attachments || []
-  //     );
-
-  //     const taskAttachments = returnedData?.data?.attachments || [];
-
-  //     setAllAttachments([...taskAttachments, ...commentAttachments]);
-  //   })();
-  // }, [id, returnedData]);
-
+    if (id) {
+      syncAttachmentsAndComments();
+    }
+  }, [id]);
 
   const renderHeader = (name) => {
     return (
@@ -198,42 +170,25 @@ export function DetailViewOfTask() {
             </Divider>
 
             <div className='attachment_array'>
-              {
-                // (allAttachments || []).map(file => (
-                //   <div
-                //     className="attachmentCard"
-                //     key={file._id}
-                //     onClick={() => handlerFn(file._id, file.fileName)}
-                //   >
-                //     {file.mimeType?.includes('image') ? (
-                //       <img className="banner_image" src={file.fileUrl} alt="" />
-                //     ) : (
-                //       <div className="test">{file.mimeType}</div>
-                //     )}
-                //   </div>
-                // ))
-                (returnedData?.data?.attachments || [
-                  {
-                    _id: 43,
-                    filename: 'ok',
-                    fileUrl: '',
-                    mineType: 'No File Found'
-                  }
-                ]).map((file) => (
-                  <div className='attachmentCard'
-                    onClick={() => { handlerFn(file._id, file.fileName) }}
-                    key={file._id}>
-                    {
-                      (file?.mimeType?.includes('image')) ?
-                        <img className='banner_image' src={`${file?.fileUrl}`} alt="image" /> :
-                        <div className='test'>{file?.mimeType || 'No file Found'}</div>
-                    }
-                  </div>
+              {(allAttachments || []).length === 0 && (
+                <div className="test">No attachments</div>
+              )}
 
-                ))
-              }
-
+              {(allAttachments || []).map((file) => (
+                <div
+                  className='attachmentCard'
+                  key={file._id}
+                  onClick={() => handlerFn(file._id, file.fileName)}
+                >
+                  {file?.mimeType?.includes('image') ? (
+                    <img className='banner_image' src={file.fileUrl} alt={file.fileName} />
+                  ) : (
+                    <div className='test'>{file.mimeType}</div>
+                  )}
+                </div>
+              ))}
             </div>
+
             <Divider align="left">
               <div className="inline-flex align-items-center">
                 {/* <i className="pi pi-user mr-2"></i> */}
