@@ -13,10 +13,9 @@ import { useRef } from 'react';
 import { FileUpload } from 'primereact/fileupload';
 
 
-export function CreateTask({ reloadDataTableFn }) {
+export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
 
     const [files, setFiles] = useState([]);
-
 
     const currentDate = new Date()
 
@@ -44,24 +43,27 @@ export function CreateTask({ reloadDataTableFn }) {
 
     const [data, setData] = useState({
 
-        title: '',
-        description: '',
-        priority: '' || 'medium',
-        dueDate: '' || ref.current,
+        title: editingRowData.title || '',
+        description: editingRowData.description || '',
+        priority: editingRowData.priority || 'medium',
+        dueDate: editingRowData?.dueDate?.split('T')[0] || ref.current,
 
-        status: undefined,
-        isAssigned: undefined,
-        createdBy: undefined,
-        UpdatedBy: undefined,
-        isDeleted: undefined,
+        status: editingRowData.status || undefined,
+        isAssigned: editingRowData.isAssigned || undefined,
+        createdBy: editingRowData.createdBy || undefined,
+        UpdatedBy: localStorage.getItem('name') || undefined,
+        isDeleted: editingRowData.isDeleted || undefined,
 
     })
-    if (data.dueDate < refCurrent.current) {
-        toast.error('date can not be of past')
-        setData((prev) => ({
-            ...prev,
-            dueDate: refCurrent.current
-        }))
+    if (par == 'create') {
+
+        if (data.dueDate < refCurrent.current) {
+            toast.error('date can not be of past')
+            setData((prev) => ({
+                ...prev,
+                dueDate: refCurrent.current
+            }))
+        }
     }
     useEffect(() => {
         console.log("data in login: ", data)
@@ -211,6 +213,51 @@ export function CreateTask({ reloadDataTableFn }) {
                 </Form.Group>
 
             </div>
+
+            {par == 'edit' && <div className='contOfPriorityAndDatePicker'>
+                {/* Status (string) */}
+                <Form.Group style={{ maxWidth: '100%' }} className="mb-3" controlId="priority">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Select
+                        name="status"
+                        value={editingRowData?.status || ''}
+                        onChange={(e) =>
+
+                            setData((prev) => ({
+                                ...prev,
+                                status: e.target.value
+                            }))
+                        }
+                    >
+                        <option value="created">created</option>
+                        <option value="in_progress">In Progess</option>
+                        <option value="review">Review</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </Form.Select>
+                </Form.Group>
+
+                {/* Date */}
+                <Form.Group className="mb-3" controlId="dueDate">
+                    <Form.Label>Assigned</Form.Label>
+                    <Form.Select
+                        name="assigned"
+                        value={data.isAssigned || ""}
+                        onChange={(e) =>
+                            setData((prev) => ({
+                                ...prev,
+                                status: e.target.value,
+                            }))
+                        }
+                    >
+                        <option value={false}>False</option>
+                        <option value={true}>True</option>
+                    </Form.Select>
+                </Form.Group>
+
+
+            </div>}
+
             <div className='contOfPriorityAndDatePicker'>
                 {/* priority (string) */}
                 <Form.Group style={{ maxWidth: '100%' }} className="mb-3" controlId="priority">

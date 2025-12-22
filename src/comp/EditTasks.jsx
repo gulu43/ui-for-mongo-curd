@@ -33,6 +33,7 @@ export function EditTasks() {
     const [currentEditData, setCurrentEditData] = useState('');
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false)
+    
 
     const navigate = useNavigate()
     const getTasksFn = async () => {
@@ -108,7 +109,6 @@ export function EditTasks() {
                     // setVisibleRight(prev => !prev)
                     setSelectedUserId(rowData._id);
                     setVisible(prev => !prev)
-                    setOption('assign')
                 }}>
                 Assign
             </Button>
@@ -122,10 +122,13 @@ export function EditTasks() {
                 onClick={async () => {
                     setSelectedUserId(rowData._id);
                     const result = await axiosInstance.post('/gettaskspost', { _id: rowData._id })
+                    console.log('edit data: ',result);
+                    console.log('file Path: ',result?.data?.files || '');
+                    
+                    setCurrentEditData(result.data.data)
 
-                    setCurrentEditData(result.data.allTasks)
                     setVisibleRight(prev => !prev)
-                    setOption('edit')
+                    setOption('edit')   
 
                 }}>
                 Edit
@@ -174,7 +177,7 @@ export function EditTasks() {
     // };
 
     const assignStatusBodyTemplate = (rowData) => {
-        console.log('check: ', rowData);
+        // console.log('check: ', rowData);
 
         return rowData.isAssigned === true ? "Assigned" : "Not Assigned";
     };
@@ -182,7 +185,8 @@ export function EditTasks() {
     const headerForDrawer = (op) => {
         return (
             <div className="heading-popup">
-                <div className='heading-txt'>Create Task</div>
+                {(op == 'create') ? <div className='heading-txt'>Create Task</div> : <div className='heading-txt'>Edit Task</div>}
+                {/* <div className='heading-txt'>Create Task</div> */}
             </div>
         );
     }
@@ -248,7 +252,7 @@ export function EditTasks() {
 
         )
     }
-    
+
     return (
         <>
             <ConfirmDialog />
@@ -256,8 +260,8 @@ export function EditTasks() {
                 '960px': '100vw',
                 '640px': '310px'
             }}>
-                <CreateTask reloadDataTableFn={getTasksFn} />
-                {/* {option === 'assign' ? <AssignTask taskId_prop={selectedUserId} reloade={getTasksFn} /> : <EditUserDetails _id={selectedUserId} reloade={getTasksFn} par={'edit'} editingRowData={currentEditData} />} */}
+                {/* <CreateTask reloadDataTableFn={getTasksFn} /> */}
+                {option === 'create' ? <CreateTask reloadDataTableFn={getTasksFn} editingRowData={{}} /> : <CreateTask reloadDataTableFn={getTasksFn} editingRowData={currentEditData} par={'edit'} />}
             </Sidebar>
 
             <Dialog header="Assign Member" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
@@ -282,6 +286,8 @@ export function EditTasks() {
                         <Button variant="" type="button" className="btn btn-primary btn-sm" onClick={() => {
                             // setVisible(prev => !prev)
                             setVisibleRight(prev => !prev)
+                            setOption('create')
+
 
                         }}>Create Task</Button>
 

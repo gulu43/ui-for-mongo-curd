@@ -74,7 +74,7 @@ export function AssignTask({ taskId_prop, reloade }) {
     };
 
     return (
-        <MainCard className="mb-0">
+        // <MainCard className="mb-0">
             <Form noValidate>
 
                 {/* User Dropdown */}
@@ -91,7 +91,7 @@ export function AssignTask({ taskId_prop, reloade }) {
                 </div>
 
                 {/* Role Dropdown */}
-                <div className="mb-3">
+                <div className="mb-3" style={{display: 'none'}}>
                     <Dropdown
                         disabled
                         value={roles[0].value}
@@ -115,6 +115,6 @@ export function AssignTask({ taskId_prop, reloade }) {
                 </button>
 
             </Form>
-        </MainCard>
+        // </MainCard>
     );
 }
