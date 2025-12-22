@@ -1,21 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MainCard from '../components/MainCard.jsx';
-import { toast } from 'react-toastify';
 import api from './axiosIntercepter.js';
-import '../App.css'
-import '../index.scss'
+
+import { toast } from 'react-toastify';
+
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import BootStrapButton from 'react-bootstrap/Button';
-import '../../src/App.css'
-import { useRef } from 'react';
+
+import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ConfirmDialog } from 'primereact/confirmdialog'; // For <ConfirmDialog /> component
+import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
+
+import '../App.css'
+import '../../src/App.css'
+import '../index.scss'
+import 'primeicons/primeicons.css';
 
 
-export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
+export function CreateTask({ reloadDataTableFn, editingRowData, exisitingFiles, par }) {
 
     const [files, setFiles] = useState([]);
+    const [removedFileIds, setRemovedFileIds] = useState([]);
+    const [existingFilesState, setExistingFiles] = useState(exisitingFiles || []);
 
     const currentDate = new Date()
 
@@ -97,44 +108,103 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
     // }
 
     const handleCLick = async (e) => {
-        e.preventDefault();
 
-        if (!data.title || !data.description || !data.priority || !data.dueDate) {
-            toast.error('Fields should not be empty');
-            return;
-        }
+        if (par == 'create') {
 
-        if (data.title.length < 3 || data.description.length < 3) {
-            toast.error('At least 3 characters required');
-            return;
-        }
+            e.preventDefault();
 
-        const formData = new FormData();
-
-        // text fields
-        formData.append('title', data.title);
-        formData.append('description', data.description);
-        formData.append('priority', data.priority);
-        formData.append('dueDate', data.dueDate);
-
-        // files
-        if (files.length > 0) {
-            files.forEach(file => {
-                formData.append('attachments', file);
-            });
-        }
-
-        try {
-            const result = await api.post('/createtask', formData);
-
-            if (result.status === 201) {
-                toast.success(result.data.message);
-                reloadDataTableFn();
+            if (!data.title || !data.description || !data.priority || !data.dueDate) {
+                toast.error('Fields should not be empty');
+                return;
             }
-        } catch (err) {
-            toast.error(err?.response?.data?.message || 'Error creating task');
+
+            if (data.title.length < 3 || data.description.length < 3) {
+                toast.error('At least 3 characters required');
+                return;
+            }
+
+            const formData = new FormData();
+
+            // text fields
+            formData.append('title', data.title);
+            formData.append('description', data.description);
+            formData.append('priority', data.priority);
+            formData.append('dueDate', data.dueDate);
+
+            // files
+            if (files.length > 0) {
+                files.forEach(file => {
+                    formData.append('attachments', file);
+                });
+            }
+
+            try {
+                const result = await api.post('/createtask', formData);
+
+                if (result.status === 201) {
+                    toast.success(result.data.message);
+                    reloadDataTableFn();
+                }
+            } catch (err) {
+                toast.error(err?.response?.data?.message || 'Error creating task');
+            }
+
+
+        } else {
+
+            e.preventDefault();
+
+            if (!data.title || !data.description || !data.priority || !data.dueDate || !data.status 
+            ) {
+                console.log('brfore validetion: ',data);
+                
+                toast.error('Fields should not be empty');
+                return;
+            }
+
+            if (data.title.length < 3 || data.description.length < 3) {
+                toast.error('At least 3 characters required');
+                return;
+            }
+
+            const formData = new FormData();
+
+            // text fields
+            formData.append('_id', editingRowData._id);
+            formData.append('title', data.title);
+            formData.append('description', data.description);
+            formData.append('priority', data.priority);
+            formData.append('dueDate', data.dueDate);
+            formData.append('status', data.status);
+            formData.append('isAssigned', data.isAssigned);
+
+            // files
+            if (files.length > 0) {
+                files.forEach(file => {
+                    formData.append('attachments', file);
+                });
+            }
+
+            // removing File arry
+            if (removedFileIds.length > 0) {
+                removedFileIds.forEach(rFileId => {
+                    formData.append('removedFileIds', rFileId);
+                });
+            }
+
+            try {
+                const result = await api.patch('/updatetask', formData);
+
+                if (result.status === 200) {
+                    toast.success(result.data.message);
+                    reloadDataTableFn();
+                }
+            } catch (err) {
+                toast.error(err?.response?.data?.message || 'Error updating task');
+            }
         }
-    };
+
+    }
     const chooseOptions = {
         icon: 'pi pi-fw pi-images',
         iconOnly: true,
@@ -158,6 +228,49 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
             </div>
         );
     };
+
+    const accept = (rowData) => {
+        setExistingFiles(prev =>
+            prev.filter(f => f._id !== rowData._id)
+        )
+        setRemovedFileIds(prev => [...prev, rowData._id])
+    }
+
+    const reject = () => {
+        toast.error('You have Cancelled');
+    }
+
+    const confirmDelete = (rowData) => {
+        confirmDialog({
+            message: 'Do you want to delete this file?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            defaultFocus: 'reject',
+            acceptClassName: 'p-button-danger',
+            accept: () => accept(rowData),
+            reject
+        });
+    };
+
+    const removeTemplate = (rowData) => {
+
+        return (
+            <>
+                <Button icon="pi pi-trash" rounded outlined severity="danger"
+                    onClick={() => confirmDelete(rowData)}
+                />
+            </>
+        )
+    }
+
+    useEffect(() => {
+        if (par === 'edit' && Array.isArray(exisitingFiles)) {
+            setExistingFiles(exisitingFiles);
+            setRemovedFileIds([]);
+        }
+    }, [exisitingFiles, par]);
+
+
     // const headerTemplate1 = (options) => {
     //     const { className, chooseButton, cancelButton } = options;
     //     return (
@@ -220,14 +333,17 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
                     <Form.Label>Status</Form.Label>
                     <Form.Select
                         name="status"
-                        value={editingRowData?.status || ''}
-                        onChange={(e) =>
+                        value={data.status || ''}
+                        // value={editingRowData?.status || ''}
+                        onChange={(e) => {
+
+                            // editingRowData.status = e.target.value
 
                             setData((prev) => ({
                                 ...prev,
                                 status: e.target.value
                             }))
-                        }
+                        }}
                     >
                         <option value="created">created</option>
                         <option value="in_progress">In Progess</option>
@@ -242,12 +358,16 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
                     <Form.Label>Assigned</Form.Label>
                     <Form.Select
                         name="assigned"
-                        value={data.isAssigned || ""}
-                        onChange={(e) =>
+                        // value={editingRowData.isAssigned || ""}
+                        value={String(data.isAssigned)}
+
+                        onChange={(e) => {
+                            // editingRowData.isAssigned = e.target.value
                             setData((prev) => ({
                                 ...prev,
-                                status: e.target.value,
+                                isAssigned: e.target.value === 'true'
                             }))
+                        }
                         }
                     >
                         <option value={false}>False</option>
@@ -281,7 +401,7 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
                 </Form.Group>
 
                 {/* Date */}
-                <Form.Group className="mb-3" controlId="dueDate">
+                <Form.Group className="mb-3" controlId="dueDate" style={{ maxWidth: '135px' }}>
                     <Form.Label>Due Date</Form.Label>
                     <Form.Control
                         type="date"
@@ -296,8 +416,19 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
                     />
                 </Form.Group>
 
-
             </div>
+
+            {par == 'edit' && existingFilesState?.length > 0 && (
+                <div className='existingFiles'>
+
+                    <DataTable header={'Existing Attachments'} value={existingFilesState} size='small' stripedRows emptyMessage="No File found." tableStyle={{ width: '100%' }}>
+                        <Column field="fileName" header="File name" width={'90%'}></Column>
+                        <Column header="delete" body={removeTemplate} width={'10%'}>times-circle</Column>
+
+                    </DataTable>
+                </div>
+            )}
+
 
             <div className="card">
                 <FileUpload
@@ -311,9 +442,13 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
                     cancelOptions={cancelOptions}
                     accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
                     maxFileSize={5 * 1024 * 1024}
+                    // onSelect={(e) => {
+                    //     setFiles(e.files);
+                    // }}
                     onSelect={(e) => {
-                        setFiles(e.files);
+                        setFiles(prev => [...prev, ...e.files]);
                     }}
+
                     emptyTemplate={
                         <p className="m-0">
                             Drag and drop files here to attach
@@ -325,8 +460,9 @@ export function CreateTask({ reloadDataTableFn, editingRowData, par }) {
             <span>
 
                 <BootStrapButton variant="primary" size="md" onClick={handleCLick}>
-                    Create
+                    {par === 'edit' ? 'Update' : 'Create'}
                 </BootStrapButton>
+
             </span>
 
 

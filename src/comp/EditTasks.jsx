@@ -33,7 +33,7 @@ export function EditTasks() {
     const [currentEditData, setCurrentEditData] = useState('');
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false)
-    
+    const [existingFiles, setExistingFiles] = useState([])
 
     const navigate = useNavigate()
     const getTasksFn = async () => {
@@ -122,13 +122,13 @@ export function EditTasks() {
                 onClick={async () => {
                     setSelectedUserId(rowData._id);
                     const result = await axiosInstance.post('/gettaskspost', { _id: rowData._id })
-                    console.log('edit data: ',result);
-                    console.log('file Path: ',result?.data?.files || '');
-                    
-                    setCurrentEditData(result.data.data)
+                    console.log('edit data: ', result);
+                    console.log('file Path: ', result?.data?.files || '');
 
+                    setCurrentEditData(result.data.data)
+                    setExistingFiles(result?.data?.files || '')
                     setVisibleRight(prev => !prev)
-                    setOption('edit')   
+                    setOption('edit')
 
                 }}>
                 Edit
@@ -261,7 +261,7 @@ export function EditTasks() {
                 '640px': '310px'
             }}>
                 {/* <CreateTask reloadDataTableFn={getTasksFn} /> */}
-                {option === 'create' ? <CreateTask reloadDataTableFn={getTasksFn} editingRowData={{}} /> : <CreateTask reloadDataTableFn={getTasksFn} editingRowData={currentEditData} par={'edit'} />}
+                {option === 'create' ? <CreateTask reloadDataTableFn={getTasksFn} exisitingFiles={[]} editingRowData={{}} /> : <CreateTask reloadDataTableFn={getTasksFn} editingRowData={currentEditData} exisitingFiles={existingFiles} par={'edit'} />}
             </Sidebar>
 
             <Dialog header="Assign Member" visible={visible} onHide={() => { if (!visible) return; setVisible(false); }}
