@@ -154,10 +154,10 @@ export function CreateTask({ reloadDataTableFn, editingRowData, exisitingFiles, 
 
             e.preventDefault();
 
-            if (!data.title || !data.description || !data.priority || !data.dueDate || !data.status 
+            if (!data.title || !data.description || !data.priority || !data.dueDate || !data.status
             ) {
-                console.log('brfore validetion: ',data);
-                
+                console.log('brfore validetion: ', data);
+
                 toast.error('Fields should not be empty');
                 return;
             }
@@ -185,12 +185,23 @@ export function CreateTask({ reloadDataTableFn, editingRowData, exisitingFiles, 
                 });
             }
 
-            // removing File arry
+            // removing File arry with type
             if (removedFileIds.length > 0) {
-                removedFileIds.forEach(rFileId => {
-                    formData.append('removedFileIds', rFileId);
+                let markedRemovedFileIds = removedFileIds.map((file) => ({
+                    ...file,
+                    collec: file?.commentId != undefined ? 'comment' : 'task'
+                }))
+                markedRemovedFileIds.forEach(rFileId => {
+                    formData.append('removedFileIds', JSON.stringify(rFileId));
                 });
             }
+
+            // removing File arry
+            // if (removedFileIds.length > 0) {
+            //     removedFileIds.forEach(rFileId => {
+            //         formData.append('removedFileIds', rFileId);
+            //     });
+            // }
 
             try {
                 const result = await api.patch('/updatetask', formData);
@@ -232,9 +243,17 @@ export function CreateTask({ reloadDataTableFn, editingRowData, exisitingFiles, 
     const accept = (rowData) => {
         setExistingFiles(prev =>
             prev.filter(f => f._id !== rowData._id)
-        )
-        setRemovedFileIds(prev => [...prev, rowData._id])
-    }
+        );
+
+        setRemovedFileIds(prev => [
+            ...prev,
+            {
+                id: rowData._id,
+                commentId: rowData.commentId 
+            }
+        ]);
+    };
+
 
     const reject = () => {
         toast.error('You have Cancelled');
