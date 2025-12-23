@@ -9,12 +9,13 @@ import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import { Fieldset } from 'primereact/fieldset';
 import { Accordion, AccordionTab } from 'primereact/accordion';
-
+import { Tag } from 'primereact/tag';
+import { OverlayPanel } from 'primereact/overlaypanel';
 // import { Button as RBButton } from 'react-bootstrap';
 // import { Avatar } from '@/components/lib/avatar/Avatar';
 import { toast } from 'react-toastify';
-import '../App.css'
 import '../index.scss';
+import '../App.css'
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -27,6 +28,8 @@ export function DetailViewOfTask() {
   const [files, setFiles] = useState([]);
   const [comments, setComments] = useState([]);
   const [allAttachments, setAllAttachments] = useState([]);
+  const [showUpload, setShowUpload] = useState(false);
+  const fileUploadRef = useRef(null);
 
   const { id } = useParams();
 
@@ -118,6 +121,8 @@ export function DetailViewOfTask() {
       toast.success('Comment Added');
       setText('');
       setFiles([]);
+      fileUploadRef.current?.clear(); // IMPORTANT
+
       await syncAttachmentsAndComments();
     }
 
@@ -154,13 +159,105 @@ export function DetailViewOfTask() {
       </span>
     );
   };
+  const op = useRef(null);
+
+  const statusConfig = {
+    created: {
+      label: 'Created',
+      severity: 'info'
+    },
+    in_progress: {
+      label: 'In Progress',
+      severity: 'warning'
+    },
+    review: {
+      label: 'In Review',
+      severity: 'help'
+    },
+    completed: {
+      label: 'Completed',
+      severity: 'success'
+    },
+    cancelled: {
+      label: 'Cancelled',
+      severity: 'danger'
+    }
+  };
+
+  const renderEditorHeader = () => {
+    return (
+      <>
+        <span className="ql-formats">
+          <button
+            type="button"
+            className="ql-attach par1"
+            onClick={() => setShowUpload(prev => !prev)}
+            title="Attach files"
+          >
+            <i className="pi pi-paperclip"></i>
+          </button>
+        </span>
+        <span className="ql-formats">
+          <button className="ql-bold" aria-label="Bold"></button>
+          <button className="ql-italic" aria-label="Italic"></button>
+          <button className="ql-underline" aria-label="Underline"></button>
+          <button className="ql-strike" aria-label="Strike"></button>
+        </span>
+        <span className="ql-formats">
+          <select className="ql-header">
+            <option value="1">Heading 1</option>
+            <option value="2">Heading 2</option>
+            <option value="3">Heading 3</option>
+            <option value="4">Heading 4</option>
+            <option value="5">Heading 5</option>
+            <option value="6">Heading 6</option>
+            <option value="">Normal</option>
+          </select>
+        </span>
+        <span className="ql-formats">
+          <button className="ql-list" value="ordered" aria-label="Ordered List"></button>
+          <button className="ql-list" value="bullet" aria-label="Bullet List"></button>
+          <select className="ql-align">
+            <option defaultValue></option>
+            <option value="center"></option>
+            <option value="right"></option>
+            <option value="justify"></option>
+          </select>
+        </span>
+        <span className="ql-formats">
+          <button className="ql-link" aria-label="Insert Link"></button>
+          <button className="ql-image" aria-label="Insert Image"></button>
+          <button className="ql-code-block" aria-label="Code Block"></button>
+        </span>
+
+
+      </>
+    );
+  };
+ 
 
   return (
     <>
       <MainCard>
         <div className='detailTaskCont' >
           <div className='leftPartCont'>
-            <div style={{ fontSize: '250%', color: 'black' }}>{returnedData?.data?.task?.title || ''}</div>
+            <div className='titleStatusDiv'>
+              <div style={{ fontSize: '250%', color: 'black' }}>{returnedData?.data?.task?.title || ''}</div>
+
+              <div>
+                {(() => {
+                  const status = returnedData?.data?.task?.status;
+                  const config = statusConfig[status];
+                  return config ? (
+                    <Tag
+                      value={config.label}
+                      severity={config.severity}
+                      style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                    />
+                  ) : null;
+                })()}
+              </div>
+            </div>
             <p style={{ fontSize: '150%', color: 'black' }}>{returnedData?.data?.task?.description || ''}</p>
             <Divider align="left">
               <div className="inline-flex align-items-center">
@@ -196,11 +293,36 @@ export function DetailViewOfTask() {
               </div>
             </Divider>
             <div className="card">
-              <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '130px' }} />
+
+              <Editor value={text}
+                headerTemplate={renderEditorHeader()}
+                onTextChange={(e) => setText(e.htmlValue)} style={{ height: '130px' }} />
+
+              {/* <Button icon="pi pi-paperclip" label="Attach" onClick={() => setShowUpload(prev => !prev)} /> */}
+              <div className='file-Upload-popup' style={{ display: showUpload ? 'block' : 'none' }}>
+                <FileUpload
+                  ref={fileUploadRef}
+                  name="attachments"
+                  multiple
+                  customUpload
+                  auto={false}
+                  headerTemplate={headerTemplate}
+                  chooseOptions={chooseOptions}
+                  cancelOptions={cancelOptions}
+                  accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                  maxFileSize={5 * 1024 * 1024}
+                  onSelect={(e) => setFiles(e.files)}
+                  emptyTemplate={<p>Drag and drop files here</p>}
+                />
+              </div>
+
             </div>
-            <div className="card">
+
+            {/* main working, file upload Do not remove, copy this for usage */}
+            {/* <div className="card">
               <FileUpload
                 name="attachments"
+                ref={fileUploadRef}
                 multiple
                 customUpload
                 auto={false}
@@ -218,7 +340,8 @@ export function DetailViewOfTask() {
                   </p>
                 }
               />
-            </div>
+            </div> */}
+
             <Divider align="left">
               <Button label="Send" icon="pi pi-send" className="p-button-outlined" onClick={handleClick} />
             </Divider>
