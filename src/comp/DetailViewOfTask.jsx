@@ -11,6 +11,8 @@ import { Fieldset } from 'primereact/fieldset';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Tag } from 'primereact/tag';
 import { OverlayPanel } from 'primereact/overlaypanel';
+import { Dialog } from 'primereact/dialog';
+
 // import { Button as RBButton } from 'react-bootstrap';
 // import { Avatar } from '@/components/lib/avatar/Avatar';
 import { toast } from 'react-toastify';
@@ -30,6 +32,8 @@ export function DetailViewOfTask() {
   const [allAttachments, setAllAttachments] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
   const fileUploadRef = useRef(null);
+  const [showMobilePanel, setShowMobilePanel] = useState(false);
+  const [position, setPosition] = useState('top-right');
 
   const { id } = useParams();
 
@@ -187,24 +191,24 @@ export function DetailViewOfTask() {
     return { datePart, timePart };
   };
 
- 
+
   const renderHeader = (name, time) => {
-  const { datePart, timePart } = formatIndianDateTime(time);
+    const { datePart, timePart } = formatIndianDateTime(time);
 
-  return (
-    <span>
-      <span style={{ color: 'black' }}>
-        By {name}
-      </span>
-      <br />
+    return (
+      <span>
+        <span style={{ color: 'black' }}>
+          By {name}
+        </span>
+        <br />
 
-      <span style={{ color: 'gray', fontSize: '90%' }}>
-        At {datePart} {timePart}
+        <span style={{ color: 'gray', fontSize: '90%' }}>
+          At {datePart} {timePart}
+        </span>
+        <br />
       </span>
-      <br />
-    </span>
-  );
-};
+    );
+  };
 
   const op = useRef(null);
 
@@ -296,19 +300,84 @@ export function DetailViewOfTask() {
             <div className='titleStatusDiv'>
               <div style={{ fontSize: '250%', color: 'black' }}>{returnedData?.data?.task?.title || ''}</div>
 
-              <div>
-                {(() => {
-                  const status = returnedData?.data?.task?.status;
-                  const config = statusConfig[status];
-                  return config ? (
-                    <Tag
-                      value={config.label}
-                      severity={config.severity}
-                      style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
-                    />
-                  ) : null;
-                })()}
+              <div className="mobile-right-toggle">
+                <Button
+                  icon="pi pi-bars"
+                  label="Details"
+                  className="p-button-outlined"
+                  // onClick={() => setShowMobilePanel('top-right')}
+                  onClick={() =>{
+                     setShowMobilePanel(true)
+                     setPosition('top-right')
+                    }}
+                />
+                <Dialog header="More Info" position={position} visible={showMobilePanel} maximizable style={{ width: 'auto' }} onHide={() => { if (!showMobilePanel) return; setShowMobilePanel(false); }}>
+                  <div className='card'>
+                    <div className='mb-2'>
+                      Status: {(() => {
+                        const status = returnedData?.data?.task?.status;
+                        const config = statusConfig[status];
+                        return config ? (
+                          <Tag
+                            value={config.label}
+                            severity={config.severity}
+                            style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                          />
+                        ) : null;
+                      })()}
+                    </div>
+                    {/* We wrap the logic in a check to ensure data exists */}
+                    {returnedData?.data?.members && (
+                      <Accordion multiple activeIndex={[0, 1]} className="w-full">
+
+                        {/* --- Tab 1: ASSIGNEES --- */}
+                        <AccordionTab
+                          header={`Assignees (${returnedData.data.members.filter(m => m.role === 'assignee').length})`}
+                        >
+                          {returnedData.data.members.filter(m => m.role === 'assignee').length > 0 ? (
+                            returnedData.data.members
+                              .filter(member => member.role === 'assignee')
+                              .map((member, index) => (
+                                <div key={index} className="mb-3 p-2 surface-100 border-round" style={{ border: '1px solid var(--surface-d)' }}>
+                                  <div className="font-bold text-lg mb-1">{member.userId?.name || 'Unknown User'}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {/* <i className="pi pi-plus-circle mr-1" style={{ fontSize: '0.8rem' }}></i> */}
+                                    Added by: {member.addedBy?.name}
+                                  </div>
+                                </div>
+                              ))
+                          ) : (
+                            <p className="m-0 text-gray-500 font-italic">No assignees yet.</p>
+                          )}
+                        </AccordionTab>
+
+                        {/* --- Tab 2: WATCHERS --- */}
+                        <AccordionTab
+                          header={`Watchers (${returnedData.data.members.filter(m => m.role !== 'assignee').length})`}
+                        >
+                          {returnedData.data.members.filter(m => m.role !== 'assignee').length > 0 ? (
+                            returnedData.data.members
+                              .filter(member => member.role !== 'assignee')
+                              .map((member, index) => (
+                                <div key={index} className="mb-3 p-2 surface-100 border-round" style={{ border: '1px solid var(--surface-d)' }}>
+                                  <div className="font-bold text-lg mb-1">{member.userId?.name || 'Unknown User'}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {/* <i className="pi pi-eye mr-1" style={{ fontSize: '0.8rem' }}></i> */}
+                                    Added by: {member.addedBy?.name}
+                                  </div>
+                                </div>
+                              ))
+                          ) : (
+                            <p className="m-0 text-gray-500 font-italic">No watchers yet.</p>
+                          )}
+                        </AccordionTab>
+
+                      </Accordion>
+                    )}
+                  </div>
+                </Dialog>
               </div>
+
             </div>
             <p style={{ fontSize: '150%', color: 'black' }}>{returnedData?.data?.task?.description || ''}</p>
             <Divider align="left">
@@ -414,6 +483,19 @@ export function DetailViewOfTask() {
           </div>
 
           <div className='rightPartCont'>
+            <div className='mb-2'>
+              Status: {(() => {
+                const status = returnedData?.data?.task?.status;
+                const config = statusConfig[status];
+                return config ? (
+                  <Tag
+                    value={config.label}
+                    severity={config.severity}
+                    style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                  />
+                ) : null;
+              })()}
+            </div>
             {/* We wrap the logic in a check to ensure data exists */}
             {returnedData?.data?.members && (
               <Accordion multiple activeIndex={[0, 1]} className="w-full">

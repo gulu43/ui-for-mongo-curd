@@ -469,7 +469,30 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 .rightPartCont {
     width: 20%;
     height: 100%;
+}
 
+.mobile-right-toggle {
+    display: none;
+}
+
+/* small layout */
+@media (max-width: 729px) {
+    .detailTaskCont {
+        flex-direction: column;
+    }
+
+    .leftPartCont {
+        width: 100%;
+    }
+
+    .rightPartCont {
+        display: none;
+        /* hide right panel on phone */
+    }
+
+    .mobile-right-toggle {
+        display: block;
+    }
 }
 
 .attachment_array {
