@@ -103,6 +103,18 @@ export function DetailViewOfTask() {
 
   const handleClick = async (e) => {
     e.preventDefault()
+
+    if (text === '' && files.length > 0 ) {     
+      toast.info('files can only be send with out comment')
+      return
+      
+    }
+    if (text === '') {
+      toast.info('comment is empty')
+      return
+    }
+
+
     const formData = new FormData()
 
     formData.append('taskId', id)
@@ -208,9 +220,9 @@ export function DetailViewOfTask() {
             <option value="1">Heading 1</option>
             <option value="2">Heading 2</option>
             <option value="3">Heading 3</option>
-            <option value="4">Heading 4</option>
+            {/* <option value="4">Heading 4</option>
             <option value="5">Heading 5</option>
-            <option value="6">Heading 6</option>
+            <option value="6">Heading 6</option> */}
             <option value="">Normal</option>
           </select>
         </span>
@@ -225,8 +237,8 @@ export function DetailViewOfTask() {
           </select>
         </span>
         <span className="ql-formats">
-          <button className="ql-link" aria-label="Insert Link"></button>
-          <button className="ql-image" aria-label="Insert Image"></button>
+          {/* <button className="ql-link" aria-label="Insert Link"></button> */}
+          {/* <button className="ql-image" aria-label="Insert Image"></button> */}
           <button className="ql-code-block" aria-label="Code Block"></button>
         </span>
 
@@ -234,7 +246,12 @@ export function DetailViewOfTask() {
       </>
     );
   };
- 
+
+  const cancleComment = () => {
+    setText('')
+    setFiles([])
+    fileUploadRef.current?.clear()
+  }
 
   return (
     <>
@@ -318,32 +335,11 @@ export function DetailViewOfTask() {
 
             </div>
 
-            {/* main working, file upload Do not remove, copy this for usage */}
-            {/* <div className="card">
-              <FileUpload
-                name="attachments"
-                ref={fileUploadRef}
-                multiple
-                customUpload
-                auto={false}
-                headerTemplate={headerTemplate}
-                chooseOptions={chooseOptions}
-                cancelOptions={cancelOptions}
-                accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
-                maxFileSize={5 * 1024 * 1024}
-                onSelect={(e) => {
-                  setFiles(e.files);
-                }}
-                emptyTemplate={
-                  <p className="m-0">
-                    Drag and drop files here to attach
-                  </p>
-                }
-              />
-            </div> */}
-
             <Divider align="left">
-              <Button label="Send" icon="pi pi-send" className="p-button-outlined" onClick={handleClick} />
+              <div>
+                <Button label="Send" icon="pi pi-send" className="p-button-outlined" onClick={handleClick} />
+                <Button style={{ marginLeft: '10px' }} label="Cancle" icon="pi pi-times-circle" className="p-button-outlined" severity="danger" onClick={cancleComment}></Button>
+              </div>
             </Divider>
 
             <div className='comment-Section'>
