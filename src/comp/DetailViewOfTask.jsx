@@ -47,10 +47,10 @@ export function DetailViewOfTask() {
     gettingTaskData()
   }, [id])
 
-  useEffect(() => {
-    console.log(returnedData?.data?.task || '');
+  // useEffect(() => {
+  //   console.log(returnedData?.data?.task || '');
 
-  }, [returnedData])
+  // }, [returnedData])
 
   const handlerFn = async (attachmentId, fileName) => {
     try {
@@ -104,10 +104,10 @@ export function DetailViewOfTask() {
   const handleClick = async (e) => {
     e.preventDefault()
 
-    if (text === '' && files.length > 0 ) {     
+    if (text === '' && files.length > 0) {
       toast.info('files can only be send with out comment')
       return
-      
+
     }
     if (text === '') {
       toast.info('comment is empty')
@@ -150,9 +150,13 @@ export function DetailViewOfTask() {
     setComments(commentRes.data.allcomments);
 
     const taskAttachments = taskRes.data.attachments || [];
+
+    // console.log('before flat: ', commentRes.data.allcomments);
+
     const commentAttachments = commentRes.data.allcomments.flatMap(
       cmt => cmt.attachments || []
     );
+    // console.log('afterflat: ', commentAttachments);
 
     setAllAttachments([...taskAttachments, ...commentAttachments]);
   };
@@ -164,13 +168,44 @@ export function DetailViewOfTask() {
     }
   }, [id]);
 
-  const renderHeader = (name) => {
-    return (
-      <span>
-        <span className="" style={{ color: 'black' }}>By {name}</span>
-      </span>
-    );
+  const formatIndianDateTime = (isoTime) => {
+    const date = new Date(isoTime);
+
+    const datePart = date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+
+    const timePart = date.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    return { datePart, timePart };
   };
+
+ 
+  const renderHeader = (name, time) => {
+  const { datePart, timePart } = formatIndianDateTime(time);
+
+  return (
+    <span>
+      <span style={{ color: 'black' }}>
+        By {name}
+      </span>
+      <br />
+
+      <span style={{ color: 'gray', fontSize: '90%' }}>
+        At {datePart} {timePart}
+      </span>
+      <br />
+    </span>
+  );
+};
+
   const op = useRef(null);
 
   const statusConfig = {
@@ -309,11 +344,12 @@ export function DetailViewOfTask() {
                 <b>Comment</b>
               </div>
             </Divider>
-            <div className="card">
+            <div className="cardComments">
 
               <Editor value={text}
+                placeholder='type here'
                 headerTemplate={renderEditorHeader()}
-                onTextChange={(e) => setText(e.htmlValue)} style={{ height: '130px' }} />
+                onTextChange={(e) => setText(e.htmlValue)} style={{ height: 'auto', maxHeight: '300px', overflowY: 'scroll' }} />
 
               {/* <Button icon="pi pi-paperclip" label="Attach" onClick={() => setShowUpload(prev => !prev)} /> */}
               <div className='file-Upload-popup' style={{ display: showUpload ? 'block' : 'none' }}>
@@ -342,9 +378,36 @@ export function DetailViewOfTask() {
               </div>
             </Divider>
 
-            <div className='comment-Section'>
+            {/* <div className='comment-Section'>
               {(comments || []).map((cmt) => (
                 <Editor key={cmt._id} className='card mb-2' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name)} style={{ height: 'auto' }} />
+
+              ))}
+            </div> */}
+
+            <div className='comment-Section'>
+              {(comments || []).map((cmt) => (
+
+                <div className='cardComments mb-2'>
+                  <Editor unstyled={true} key={cmt._id} className='ql-toolbar ql-container ql-editor' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name, cmt.createdAt)} style={{ height: 'auto' }} />
+                  <div className='attachment_array' >
+                    {
+                      (cmt?.attachments || []).map((file) => (
+                        <div
+                          className='attachmentCard'
+                          key={file?._id}
+                          onClick={() => handlerFn(file._id, file.fileName)}
+                        >
+                          {file?.mimeType?.includes('image') ? (
+                            <img className='banner_image' src={file.fileUrl} alt={file.fileName} />
+                          ) : (
+                            <div className='test'>{file.mimeType}</div>
+                          )}
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
 
               ))}
             </div>
