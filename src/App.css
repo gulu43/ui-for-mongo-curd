@@ -587,8 +587,14 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     /* background-color: '#ffffff'!important; */
     /* width: auto; */
     position: relative;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
     border-radius: 15px;
     padding: 10px;
+    /* box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15); */
 
+}
+
+.box {
+    border: 1px solid gray;
+    /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); */
 }

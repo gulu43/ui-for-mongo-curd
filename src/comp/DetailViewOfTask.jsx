@@ -277,7 +277,7 @@ export function DetailViewOfTask() {
         </span>
         <span className="ql-formats">
           {/* <button className="ql-link" aria-label="Insert Link"></button> */}
-          {/* <button className="ql-image" aria-label="Insert Image"></button> */}
+          <button className="ql-image" aria-label="Insert Image"></button>
           <button className="ql-code-block" aria-label="Code Block"></button>
         </span>
 
@@ -294,9 +294,10 @@ export function DetailViewOfTask() {
 
   return (
     <>
-      <MainCard>
-        <div className='detailTaskCont' >
-          <div className='leftPartCont'>
+
+      <div className='detailTaskCont' >
+        <div className='leftPartCont'>
+          <MainCard>
             <div className='titleStatusDiv'>
               <div style={{ fontSize: '250%', color: 'black' }}>{returnedData?.data?.task?.title || ''}</div>
 
@@ -306,10 +307,10 @@ export function DetailViewOfTask() {
                   label="Details"
                   className="p-button-outlined"
                   // onClick={() => setShowMobilePanel('top-right')}
-                  onClick={() =>{
-                     setShowMobilePanel(true)
-                     setPosition('top-right')
-                    }}
+                  onClick={() => {
+                    setShowMobilePanel(true)
+                    setPosition('top-right')
+                  }}
                 />
                 <Dialog header="More Info" position={position} visible={showMobilePanel} maximizable style={{ width: 'auto' }} onHide={() => { if (!showMobilePanel) return; setShowMobilePanel(false); }}>
                   <div className='card'>
@@ -406,15 +407,12 @@ export function DetailViewOfTask() {
                 </div>
               ))}
             </div>
+          </MainCard>
 
-            <Divider align="left">
-              <div className="inline-flex align-items-center">
-                {/* <i className="pi pi-user mr-2"></i> */}
-                <b>Comment</b>
-              </div>
-            </Divider>
-            <div className="cardComments">
+          <MainCard >
+            <div style={{ fontSize: '250%', color: 'black' }}>Comment</div>
 
+            <div className="cardComments ">
               <Editor value={text}
                 placeholder='type here'
                 headerTemplate={renderEditorHeader()}
@@ -437,7 +435,6 @@ export function DetailViewOfTask() {
                   emptyTemplate={<p>Drag and drop files here</p>}
                 />
               </div>
-
             </div>
 
             <Divider align="left">
@@ -455,9 +452,9 @@ export function DetailViewOfTask() {
             </div> */}
 
             <div className='comment-Section'>
-              {(comments || []).map((cmt) => (
 
-                <div className='cardComments mb-2'>
+              {(comments || []).map((cmt) => (
+                <div className='cardComments mb-2 card'>
                   <Editor unstyled={true} key={cmt._id} className='ql-toolbar ql-container ql-editor' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name, cmt.createdAt)} style={{ height: 'auto' }} />
                   <div className='attachment_array' >
                     {
@@ -480,9 +477,10 @@ export function DetailViewOfTask() {
 
               ))}
             </div>
-          </div>
-
-          <div className='rightPartCont'>
+          </MainCard>
+        </div>
+        <div className='rightPartCont'>
+          <MainCard>
             <div className='mb-2'>
               Status: {(() => {
                 const status = returnedData?.data?.task?.status;
@@ -544,10 +542,10 @@ export function DetailViewOfTask() {
 
               </Accordion>
             )}
-          </div>
-
+          </MainCard>
         </div>
-      </MainCard>
+      </div >
+
     </>
   );
 }
