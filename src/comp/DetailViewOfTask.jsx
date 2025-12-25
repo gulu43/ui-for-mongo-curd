@@ -12,6 +12,7 @@ import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Tag } from 'primereact/tag';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Dialog } from 'primereact/dialog';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 // import { Button as RBButton } from 'react-bootstrap';
 // import { Avatar } from '@/components/lib/avatar/Avatar';
@@ -34,6 +35,13 @@ export function DetailViewOfTask() {
   const fileUploadRef = useRef(null);
   const [showMobilePanel, setShowMobilePanel] = useState(false);
   const [position, setPosition] = useState('top-right');
+  const [updateComment, setUpdateComment] = useState(false);
+  const [positionUpdateComment, setPositionUpdateComment] = useState('bottom');
+  const [editingComment, setEditingComment] = useState(null);
+  const [editText, setEditText] = useState('');
+  const [removedAttachmentIds, setRemovedAttachmentIds] = useState([]);
+  const [editFiles, setEditFiles] = useState([]);
+  const editFileUploadRef = useRef(null);
 
   const { id } = useParams();
 
@@ -160,7 +168,7 @@ export function DetailViewOfTask() {
     const commentAttachments = commentRes.data.allcomments.flatMap(
       cmt => cmt.attachments || []
     );
-    // console.log('afterflat: ', commentAttachments);
+    console.log('afterflat: ', commentAttachments);
 
     setAllAttachments([...taskAttachments, ...commentAttachments]);
   };
@@ -291,9 +299,75 @@ export function DetailViewOfTask() {
     setFiles([])
     fileUploadRef.current?.clear()
   }
+  const openEditDialog = (comment) => {
+    setEditingComment(comment);
+    setEditText(comment.message);
+    setRemovedAttachmentIds([]);
+    setEditFiles([]);
+    setUpdateComment(true);
+    setPositionUpdateComment('bottom');
+  };
+  const submitEditComment = async () => {
+    if (!editingComment) return;
+
+    const formData = new FormData();
+    formData.append('_id', editingComment._id);
+    formData.append('message', editText);
+
+    removedAttachmentIds.forEach(id =>
+      formData.append('removedAttachmentIds[]', id)
+    );
+
+    editFiles.forEach(file =>
+      formData.append('attachments', file)
+    );
+
+    try {
+      const res = await axiosInstance.patch('/updatecomment', formData);
+
+      if (res.status === 200) {
+        toast.success('Comment updated');
+        setUpdateComment(false);
+        setEditingComment(null);
+        await syncAttachmentsAndComments();
+      }
+    } catch (err) {
+      toast.error('Update failed');
+    }
+  };
+ 
+  const handleDeleteComment = (commentId) => {
+    confirmDialog({
+      message: 'Delete this comment with its attached files?',
+      header: 'Confirm Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptClassName: 'p-button-danger',
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+
+      accept: async () => {
+        try {
+          const res = await axiosInstance.post('/deletecomment', { _id: commentId });
+
+          if (res.status === 200) {
+            toast.success('Comment deleted');
+            await syncAttachmentsAndComments();
+          }
+        } catch (err) {
+          toast.error('Delete failed');
+        }
+      },
+
+      reject: () => {
+        // intentionally empty (no toast)
+      }
+    });
+  };
+
 
   return (
     <>
+      <ConfirmDialog />
 
       <div className='detailTaskCont' >
         <div className='leftPartCont'>
@@ -454,8 +528,8 @@ export function DetailViewOfTask() {
             <div className='comment-Section'>
 
               {(comments || []).map((cmt) => (
-                <div className='cardComments mb-2 card'>
-                  <Editor unstyled={true} key={cmt._id} className='ql-toolbar ql-container ql-editor' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name, cmt.createdAt)} style={{ height: 'auto' }} />
+                <div key={cmt._id} className='cardComments mb-2 card'>
+                  <Editor unstyled={true} className='ql-toolbar ql-container ql-editor' value={cmt.message} readOnly headerTemplate={renderHeader(cmt.commentedBy.name, cmt.createdAt)} style={{ height: 'auto' }} />
                   <div className='attachment_array' >
                     {
                       (cmt?.attachments || []).map((file) => (
@@ -473,10 +547,86 @@ export function DetailViewOfTask() {
                       ))
                     }
                   </div>
+                  {cmt.commentedBy.usersname == localStorage.getItem('usersname') &&
+                    <span className='mt-2'>
+                      <a className='btn btn-primary sm' style={{ color: 'white' }} onClick={() => openEditDialog(cmt)}> Edit </a>
+                      <a className='btn btn-danger sm ml' style={{ color: 'white' }} onClick={() => handleDeleteComment(cmt._id)} >Delete</a>
+                    </span>}
                 </div>
-
               ))}
             </div>
+            <Dialog
+              header="Edit Comment"
+              position={positionUpdateComment}
+              visible={updateComment}
+              style={{ width: '50vw' }}
+              maximizable
+              onHide={() => {
+                setUpdateComment(false);
+                setEditingComment(null);
+              }}
+            >
+              {editingComment && (
+                <>
+                  {/* Editor */}
+                  <Editor
+                    value={editText}
+                    onTextChange={(e) => setEditText(e.htmlValue)}
+                    style={{ height: '200px' }}
+                  />
+
+                  {/* Existing attachments */}
+                  <Divider align="left">Existing Attachments</Divider>
+
+                  <div className="attachment_array">
+                    {(editingComment.attachments || []).map(att => (
+                      <div key={att._id} className="attachmentCard">
+                        <span>{att.fileName}</span>
+                        <Button
+                          icon="pi pi-times"
+                          severity="danger"
+                          rounded
+                          size="small"
+                          onClick={() =>
+                            setRemovedAttachmentIds(prev => [...prev, att._id])
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* New attachments */}
+                  <Divider align="left">Add New Files</Divider>
+
+                  <FileUpload
+                    ref={editFileUploadRef}
+                    multiple
+                    customUpload
+                    auto={false}
+                    onSelect={(e) => setEditFiles(e.files)}
+                    emptyTemplate={<p>Drag and drop files</p>}
+                  />
+
+                  {/* Actions */}
+                  <div style={{ marginTop: '1rem', textAlign: 'right' }}>
+                    <Button
+                      label="Update"
+                      icon="pi pi-check"
+                      onClick={submitEditComment}
+                    />
+                    <Button
+                      label="Cancel"
+                      severity="secondary"
+                      className="ml-2"
+                      onClick={() => {
+                        setUpdateComment(false);
+                        setEditingComment(null);
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+            </Dialog>
           </MainCard>
         </div>
         <div className='rightPartCont'>
