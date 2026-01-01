@@ -296,7 +296,7 @@ export function TasksForUser() {
 
                 {/* <div className=""> */}
                 <DataTable value={usersData} stripedRows loading={loading} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}
-                    scrollable scrollHeight="65vh"
+                    scrollable scrollHeight="65vh" 
                     header={header}
                     filters={filters}
                     // resizableColumns 
