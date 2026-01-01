@@ -51,9 +51,9 @@ export function DetailViewOfTask() {
     const gettingTaskData = async () => {
       const result = await axiosInstance.post('/gettaskdetails', { id })
       setReturnedData(result)
-      console.log('task: ', result.data.task);
-      console.log('attachments: ', result.data.attachments);
-      console.log('members: ', result.data.members);
+      // console.log('task: ', result.data.task);
+      // console.log('attachments: ', result.data.attachments);
+      // console.log('members: ', result.data.members);
       console.log('Result: ', result);
 
 
@@ -170,7 +170,7 @@ export function DetailViewOfTask() {
     const commentAttachments = commentRes.data.allcomments.flatMap(
       cmt => cmt.attachments || []
     );
-    console.log('afterflat: ', commentAttachments);
+    // console.log('afterflat: ', commentAttachments);
 
     setAllAttachments([...taskAttachments, ...commentAttachments]);
   };

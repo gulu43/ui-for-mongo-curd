@@ -103,6 +103,13 @@ export default function MainDrawer() {
               </Link>
             </li>}
 
+            {role.includes(['user']) && <li className="pc-item">
+              <Link className="pc-link" to="/usertasks">
+                <span className="pc-micon"><i className="ph-duotone ph-users"></i></span>
+                Tasks
+              </Link>
+            </li>}
+
             {/* <li className="pc-item">
               <Link className="pc-link" to="/products">
                 <span className="pc-micon"><i className="ph-duotone ph-bag"></i></span>

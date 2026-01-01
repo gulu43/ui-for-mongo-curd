@@ -27,6 +27,7 @@ import { NotFound } from './NotFound.jsx'
 import { CreateTask } from './CreateTask.jsx'
 import { EditTasks } from './EditTasks.jsx'
 import { DetailViewOfTask } from './DetailViewOfTask.jsx'
+import { TasksForUser } from './TasksForUser.jsx'
 
 export const StateContext = createContext()
 
@@ -123,6 +124,7 @@ function App() {
           <Route path='/createtask' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<CreateTask />} />}</ProtectedRoutes>} />
           <Route path='/edittasks' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<EditTasks />} />}</ProtectedRoutes>} />
           <Route path='/taskdetails/:id' element={<ProtectedRoutes requiredRole={['admin']}>{<MainLayout page={<DetailViewOfTask />} />}</ProtectedRoutes>} />
+          <Route path='/usertasks' element={<ProtectedRoutes requiredRole={['user']}>{<MainLayout page={<TasksForUser />} />}</ProtectedRoutes>} />
           <Route path='/pagenotfound' element={<NotFound />} />
           <Route path='*' element={<Navigate to={'/pagenotfound'} />} />
 
