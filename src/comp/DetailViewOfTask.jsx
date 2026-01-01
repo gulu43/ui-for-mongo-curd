@@ -13,7 +13,8 @@ import { Tag } from 'primereact/tag';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Dialog } from 'primereact/dialog';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 // import { Button as RBButton } from 'react-bootstrap';
 // import { Avatar } from '@/components/lib/avatar/Avatar';
 import { toast } from 'react-toastify';
@@ -42,6 +43,7 @@ export function DetailViewOfTask() {
   const [removedAttachmentIds, setRemovedAttachmentIds] = useState([]);
   const [editFiles, setEditFiles] = useState([]);
   const editFileUploadRef = useRef(null);
+  const [existingFilesState, setExistingFilesState] = useState([]);
 
   const { id } = useParams();
 
@@ -302,6 +304,7 @@ export function DetailViewOfTask() {
   const openEditDialog = (comment) => {
     setEditingComment(comment);
     setEditText(comment.message);
+    setExistingFilesState(comment.attachments || []);
     setRemovedAttachmentIds([]);
     setEditFiles([]);
     setUpdateComment(true);
@@ -335,7 +338,7 @@ export function DetailViewOfTask() {
       toast.error('Update failed');
     }
   };
- 
+
   const handleDeleteComment = (commentId) => {
     confirmDialog({
       message: 'Delete this comment with its attached files?',
@@ -570,6 +573,7 @@ export function DetailViewOfTask() {
                 <>
                   {/* Editor */}
                   <Editor
+                    // headerTemplate={renderEditorHeader()}
                     value={editText}
                     onTextChange={(e) => setEditText(e.htmlValue)}
                     style={{ height: '200px' }}
@@ -578,31 +582,47 @@ export function DetailViewOfTask() {
                   {/* Existing attachments */}
                   <Divider align="left">Existing Attachments</Divider>
 
-                  <div className="attachment_array">
-                    {(editingComment.attachments || []).map(att => (
-                      <div key={att._id} className="attachmentCard">
-                        <span>{att.fileName}</span>
+                  <DataTable
+                    header="Existing Attachments"
+                    value={existingFilesState}
+                    size="small"
+                    stripedRows
+                    emptyMessage="No files attached"
+                    tableStyle={{ width: '100%' }}
+                  >
+                    <Column field="fileName" header="File name" />
+                    <Column
+                      header="Delete"
+                      body={(row) => (
                         <Button
-                          icon="pi pi-times"
+                          icon="pi pi-trash"
                           severity="danger"
-                          rounded
-                          size="small"
-                          onClick={() =>
-                            setRemovedAttachmentIds(prev => [...prev, att._id])
-                          }
+                          text
+                          onClick={() => {
+                            setRemovedAttachmentIds(prev => [...prev, row._id]);
+                            setExistingFilesState(prev =>
+                              prev.filter(f => f._id !== row._id)
+                            );
+                          }}
                         />
-                      </div>
-                    ))}
-                  </div>
+                      )}
+                    />
+                  </DataTable>
 
                   {/* New attachments */}
                   <Divider align="left">Add New Files</Divider>
 
                   <FileUpload
                     ref={editFileUploadRef}
+                    name="attachments"
                     multiple
                     customUpload
                     auto={false}
+                    headerTemplate={headerTemplate}
+                    chooseOptions={chooseOptions}
+                    cancelOptions={cancelOptions}
+                    accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                    maxFileSize={5 * 1024 * 1024}
                     onSelect={(e) => setEditFiles(e.files)}
                     emptyTemplate={<p>Drag and drop files</p>}
                   />
